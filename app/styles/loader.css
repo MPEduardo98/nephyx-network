@@ -1,0 +1,59 @@
+.loader-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel);
+  border-radius: inherit;
+  animation: fadeIn 0.15s ease forwards;
+}
+
+.loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+/* ── Spinning circle ──────────────────────────────────────────── */
+.loader-ring-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-top-color: var(--accent, #e80028);
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Icon centered ────────────────────────────────────────────── */
+.loader-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-icon {
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+/* ── Hide unused ──────────────────────────────────────────────── */
+.loader-ring-middle,
+.loader-orbit,
+.loader-orbit-dot {
+  display: none;
+}
+
+/* ── Keyframes ────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
