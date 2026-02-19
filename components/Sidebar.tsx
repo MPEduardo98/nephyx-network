@@ -4,178 +4,220 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faUser,
-  faTrophy,
-  faBook,
-  faChartBar,
-  faBell,
-  faChevronLeft,
-  faChevronRight,
-  faChevronDown,
-  faRightFromBracket,
-  faRightToBracket,
+  faUser, faTrophy, faBook, faRankingStar, faCircleInfo,
+  faChevronLeft, faChevronRight, faChevronDown,
+  faRightFromBracket, faRightToBracket,
+  faIdBadge, faPeopleGroup, faGamepad, faMedal, faGift,
+  faList, faCircleDot,
+  faGavel, faCrown, faRoute, faBolt, faFire,
+  faCalendar,
+  faBuilding, faEnvelope, faCircleQuestion,
+  faSun, faScrewdriverWrench,
 } from '@fortawesome/free-solid-svg-icons';
 
 const navItems = [
   {
     name: 'Perfil',
-    href: '/perfil',
     icon: faUser,
+    authOnly: true,
     sublinks: [
-      { name: 'Mi perfil', href: '/perfil' },
-      { name: 'Equipos', href: '/perfil/equipos' },
-      { name: 'Partidos', href: '/perfil/partidos' },
-      { name: 'Logros', href: '/perfil/logros' },
-      { name: 'Premios', href: '/perfil/premios' },
+      { name: 'Mi Perfil',  href: '/perfil',           icon: faIdBadge     },
+      { name: 'Equipos',   href: '/perfil/equipos',    icon: faPeopleGroup },
+      { name: 'Partidos',  href: '/perfil/partidos',   icon: faGamepad     },
+      { name: 'Logros',    href: '/perfil/logros',     icon: faTrophy      },
+      { name: 'Premios',   href: '/perfil/premios',    icon: faMedal       },
     ],
   },
-  { name: 'Torneos', href: '/torneos', icon: faTrophy },
-  { name: 'Reglamentos', href: '/reglamentos', icon: faBook },
-  { name: 'Clasificatoria', href: '/clasificatoria', icon: faChartBar },
-  { name: 'Información', href: '/informacion', icon: faBell },
+  {
+    name: 'Torneos',
+    icon: faTrophy,
+    sublinks: [
+      { name: 'Ver todos los torneos', href: '/torneos',          icon: faList      },
+      { name: 'Torneo Activo',         href: '/torneos/activo-1', icon: faCircleDot },
+    ],
+  },
+  {
+    name: 'Reglamentos',
+    icon: faBook,
+    sublinks: [
+      { name: 'Reglamento General',   href: '/reglamentos/general',      icon: faGavel },
+      { name: 'Nephyx League',        href: '/reglamentos/league',       icon: faCrown },
+      { name: 'Nephyx Circuit',       href: '/reglamentos/circuit',      icon: faRoute },
+      { name: 'Nephyx Clash',         href: '/reglamentos/clash',        icon: faBolt  },
+      { name: 'Nephyx Pre-Temporada', href: '/reglamentos/pretemporada', icon: faFire  },
+    ],
+  },
+  {
+    name: 'Clasificatoria',
+    icon: faRankingStar,
+    sublinks: [
+      { name: 'Season 2026', href: '/clasificatoria?year=2026', icon: faCalendar },
+    ],
+  },
+  {
+    name: 'Información',
+    icon: faCircleInfo,
+    sublinks: [
+      { name: 'Nosotros', href: '/informacion/nosotros', icon: faBuilding       },
+      { name: 'Contacto', href: '/informacion/contacto', icon: faEnvelope       },
+      { name: 'FAQ',      href: '/informacion/faq',      icon: faCircleQuestion },
+    ],
+  },
 ];
 
 export default function Sidebar() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === 'authenticated';
-  const isLoading = status === 'loading';
+  const isAdmin    = session?.user?.grupo === 'admin';
+  const pathname   = usePathname();
 
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed,    setCollapsed]    = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const toggleDropdown = (itemName: string) => {
-    setOpenDropdown(openDropdown === itemName ? null : itemName);
-  };
+  const toggleDropdown = (name: string) =>
+    setOpenDropdown(openDropdown === name ? null : name);
+
+  // Inicial del usuario para el avatar fallback
+  const userInitial = session?.user?.name?.[0]?.toUpperCase() ?? 'U';
 
   return (
-    <>
-      <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-        {/* Logo and Toggle */}
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <Link href="/">
-              <Image src="/logos/icon.png" alt="Nephyx" width={40} height={40} />
-            </Link>
-          </div>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="sidebar-toggle"
-            aria-label="Toggle sidebar"
-          >
-            <FontAwesomeIcon icon={collapsed ? faChevronRight : faChevronLeft} />
-          </button>
-        </div>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
 
-        {/* Navigation */}
-        <nav className="sidebar-nav">
+      {/* ── Header ──────────────────────────────────────────── */}
+      <div className="sidebar-header">
+        <Link href="/" className="sidebar-logo-link">
+          <Image src="/logos/icon.png" alt="Nephyx" width={42} height={42} />
+        </Link>
+
+        <button
+          className="sidebar-toggle"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? 'Expandir' : 'Colapsar'}
+        >
+          <FontAwesomeIcon icon={collapsed ? faChevronRight : faChevronLeft} />
+        </button>
+      </div>
+
+      {/* ── Nav ─────────────────────────────────────────────── */}
+      <nav className="sidebar-nav">
+
+        {/* Primary */}
+        <ul className="nav-list primary-nav">
           {navItems.map((item, index) => {
-            const hasSublinks = item.sublinks && item.sublinks.length > 0;
-            const isOpen = openDropdown === item.name;
+            if (item.authOnly && !isLoggedIn) return null;
+
+            const isOpen      = openDropdown === item.name;
+            const hasSublinks = !!item.sublinks?.length;
+            const dropdownHeight = hasSublinks
+              ? item.sublinks!.length * 46 + 16
+              : 0;
 
             return (
-              <div key={index} className="sidebar-item-wrapper">
-                {hasSublinks ? (
-                  <button
-                    onClick={() => toggleDropdown(item.name)}
-                    className="sidebar-link sidebar-dropdown-trigger"
-                    title={collapsed ? item.name : ''}
-                  >
-                    <span className="sidebar-icon">
-                      <FontAwesomeIcon icon={item.icon} />
-                    </span>
-                    {!collapsed && (
-                      <>
-                        <span className="sidebar-text">{item.name}</span>
-                        <FontAwesomeIcon
-                          icon={faChevronDown}
-                          className={`sidebar-chevron ${isOpen ? 'open' : ''}`}
-                        />
-                      </>
-                    )}
-                  </button>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className="sidebar-link"
-                    title={collapsed ? item.name : ''}
-                  >
-                    <span className="sidebar-icon">
-                      <FontAwesomeIcon icon={item.icon} />
-                    </span>
-                    {!collapsed && (
-                      <>
-                        <span className="sidebar-text">{item.name}</span>
-                        <FontAwesomeIcon icon={faChevronDown} className="sidebar-chevron" />
-                      </>
-                    )}
-                  </Link>
-                )}
+              <li
+                key={index}
+                className={`nav-item dropdown-container ${isOpen ? 'open' : ''}`}
+              >
+                <button
+                  className="nav-link dropdown-toggle"
+                  onClick={() => toggleDropdown(item.name)}
+                  title={collapsed ? item.name : ''}
+                >
+                  <FontAwesomeIcon icon={item.icon} />
+                  <span className="nav-label">{item.name}</span>
+                  <FontAwesomeIcon icon={faChevronDown} className="dropdown-icon" />
+                </button>
 
-                {hasSublinks && !collapsed && (
-                  <div className={`sidebar-dropdown ${isOpen ? 'open' : ''}`}>
-                    {item.sublinks!.map((sublink, subIndex) => (
-                      <Link key={subIndex} href={sublink.href} className="sidebar-sublink">
-                        {sublink.name}
-                      </Link>
+                {hasSublinks && (
+                  <ul
+                    className="dropdown-menu"
+                    style={{
+                      height: isOpen && !collapsed ? `${dropdownHeight}px` : undefined,
+                    }}
+                  >
+                    <li className="nav-item">
+                      <span className="nav-link dropdown-title">{item.name}</span>
+                    </li>
+                    {item.sublinks!.map((sub, si) => (
+                      <li key={si} className="nav-item">
+                        <Link
+                          href={sub.href}
+                          className={`nav-link dropdown-link ${pathname === sub.href ? 'active' : ''}`}
+                        >
+                          <FontAwesomeIcon icon={sub.icon} />
+                          <span>{sub.name}</span>
+                        </Link>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
-              </div>
+              </li>
             );
           })}
-        </nav>
+        </ul>
 
-        {/* Bottom Section */}
-        <div className="sidebar-bottom">
-          {isLoading ? (
-            // Skeleton mientras carga la sesión
-            <div className="user-profile" style={{ opacity: 0.4 }}>
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--borders)' }} />
+        {/* Secondary */}
+        <ul className="nav-list secondary-nav">
+          {/* Theme toggle */}
+          <li className="nav-item">
+            <div className="nav-link" style={{ cursor: 'default' }}>
+              <FontAwesomeIcon icon={faSun} />
+              <span className="nav-label">Modo claro</span>
+              <label className="theme-toggle__switch">
+                <input type="checkbox" className="theme-toggle__input" />
+                <span className="theme-toggle__slider" />
+              </label>
             </div>
-          ) : isLoggedIn ? (
-            // ── SESIÓN ACTIVA ──────────────────────────────────────
-            <div className="user-profile">
-              <Image
-                src="/logos/icon.png"
-                alt={session.user.name ?? 'avatar'}
-                width={collapsed ? 24 : 40}
-                height={collapsed ? 24 : 40}
-                className="user-avatar"
-              />
-              {!collapsed && (
-                <div className="user-info">
-                  <div className="user-name">{session.user.name}</div>
-                  <div className="user-group">{session.user.grupo}</div>
-                </div>
-              )}
-              <button
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="logout-btn"
-                title="Cerrar Sesión"
-              >
-                <FontAwesomeIcon icon={faRightFromBracket} />
-              </button>
-            </div>
-          ) : (
-            // ── SIN SESIÓN ─────────────────────────────────────────
-            <Link
-              href="/auth/login"
-              className="sidebar-link"
-              title={collapsed ? 'Iniciar Sesión' : ''}
-              style={{ marginTop: 'auto' }}
-            >
-              <span className="sidebar-icon">
-                <FontAwesomeIcon icon={faRightToBracket} />
-              </span>
-              {!collapsed && <span className="sidebar-text">Iniciar Sesión</span>}
-            </Link>
+          </li>
+
+          {/* Admin panel */}
+          {isAdmin && (
+            <li className="nav-item">
+              <Link href="/admin/dashboard" className="nav-link">
+                <FontAwesomeIcon icon={faScrewdriverWrench} />
+                <span className="nav-label">Nephyx Panel</span>
+              </Link>
+            </li>
           )}
-        </div>
-      </aside>
+        </ul>
+      </nav>
 
-      <div className={`sidebar-spacer ${collapsed ? 'collapsed' : ''}`} />
-    </>
+      {/* ── Footer — usuario ─────────────────────────────────── */}
+      <div className="sidebar-footer">
+        {isLoggedIn ? (
+          <div className="sidebar-user-card">
+            {/* Avatar */}
+            <div className="sidebar-user-avatar">
+              <div className="sidebar-avatar-fallback">
+                {userInitial}
+              </div>
+              <span className="sidebar-user-online" />
+            </div>
+
+            {/* Info */}
+            <div className="sidebar-user-info">
+              <span className="sidebar-user-name">{session.user.name}</span>
+              <span className="sidebar-user-role">{session.user.grupo}</span>
+            </div>
+
+            {/* Logout */}
+            <button
+              className="sidebar-logout-btn"
+              onClick={() => signOut({ callbackUrl: '/' })}
+              title="Cerrar Sesión"
+            >
+              <FontAwesomeIcon icon={faRightFromBracket} />
+            </button>
+          </div>
+        ) : (
+          <Link href="/auth/login" className="sidebar-login-footer">
+            <FontAwesomeIcon icon={faRightToBracket} />
+            <span>Iniciar Sesión</span>
+          </Link>
+        )}
+      </div>
+    </aside>
   );
 }

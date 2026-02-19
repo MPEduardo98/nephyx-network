@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import { authConfig } from '@/auth.config';
 
-// Solo usamos authConfig (sin Node modules) para que corra en Edge Runtime
+// Next.js 16 renombró middleware.ts a proxy.ts
 export default NextAuth(authConfig).auth;
 
 export const config = {
