@@ -14,6 +14,7 @@ declare module 'next-auth' {
     } & DefaultSession['user'];
   }
 
+  // Extiende el User que retorna authorize() con los campos extra
   interface User {
     grupo?: 'usuario' | 'admin' | 'editor';
     nivel?: number;

@@ -1,11 +1,22 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faEye, faEyeSlash, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { faDiscord, faTwitch, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import {
+  faEnvelope,
+  faLock,
+  faEye,
+  faEyeSlash,
+  faArrowRight,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  faDiscord,
+  faTwitch,
+  faGoogle,
+} from '@fortawesome/free-brands-svg-icons';
 import { useAlert } from '@/components/alerts/AlertProvider';
 
 export default function LoginForm() {
@@ -23,15 +34,16 @@ export default function LoginForm() {
     const errorParam = searchParams?.get('error');
     if (!errorParam) return;
 
-    const message = errorParam === 'CredentialsSignin'
-      ? 'Usuario o contraseña incorrectos'
-      : 'No se pudo iniciar sesión. Inténtalo nuevamente.';
+    const message =
+      errorParam === 'CredentialsSignin'
+        ? 'Usuario o contraseña incorrectos'
+        : 'No se pudo iniciar sesión. Inténtalo nuevamente.';
 
     setError(message);
     notifyError(message, { title: 'Error de autenticación' });
   }, [notifyError, searchParams]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -43,20 +55,24 @@ export default function LoginForm() {
         password,
       });
 
-      if (result?.error) {
-        const message = result.error === 'CredentialsSignin'
-          ? 'Usuario o contraseña incorrectos'
-          : 'No se pudo iniciar sesión. Intenta de nuevo.';
+      if (!result || result.error) {
+        // En NextAuth v5 el error de credenciales inválidas es 'CredentialsSignin'
+        const message =
+          result?.error === 'CredentialsSignin' || result?.error === 'CallbackRouteError'
+            ? 'Usuario o contraseña incorrectos'
+            : 'No se pudo iniciar sesión. Intenta de nuevo.';
         setError(message);
         notifyError(message, { title: 'Error de autenticación' });
         return;
       }
 
+      // Redirigir al callbackUrl si existe, sino a la raíz
+      const callbackUrl = searchParams?.get('callbackUrl') ?? '/';
       success('Sesión iniciada correctamente.', { title: 'Bienvenido' });
-      router.push('/');
+      router.push(callbackUrl);
       router.refresh();
     } catch {
-      const message = 'Email o contraseña incorrectos';
+      const message = 'Ocurrió un error inesperado. Intenta de nuevo.';
       setError(message);
       notifyError(message, { title: 'Error de autenticación' });
     } finally {
@@ -77,12 +93,12 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit} className="login-form">
           {/* Login Field */}
           <div className="form-group">
-            <label htmlFor="email" className="form-label">
+            <label htmlFor="login" className="form-label">
               <FontAwesomeIcon icon={faEnvelope} className="form-icon" />
               Usuario o correo
             </label>
             <input
-              id="email"
+              id="login"
               type="text"
               placeholder="usuario o correo"
               value={login}
@@ -90,6 +106,7 @@ export default function LoginForm() {
               required
               className="form-input"
               disabled={loading}
+              autoComplete="username"
             />
           </div>
 
@@ -109,12 +126,14 @@ export default function LoginForm() {
                 required
                 className="form-input"
                 disabled={loading}
+                autoComplete="current-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="password-toggle"
                 disabled={loading}
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               >
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
@@ -122,7 +141,7 @@ export default function LoginForm() {
           </div>
 
           {/* Error Message */}
-          {error && <div className="form-error">{error}</div>}
+          {error && <div className="form-error" role="alert">{error}</div>}
 
           {/* Remember & Forgot */}
           <div className="form-footer">
