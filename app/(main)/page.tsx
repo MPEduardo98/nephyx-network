@@ -3,31 +3,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrophy, faUsers, faChevronRight, faCalendarAlt, faArrowRight,
   faCircle, faMedal, faGlobe, faChartLine, faShield, faClock,
-  faTicket, faLayerGroup, faLock, faStar, faHourglassHalf,
+  faTicket, faLayerGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { getDb } from '@/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
 import TournamentBanner from '@/components/TournamentBanner';
+import TeamLogo from '@/components/TeamLogo';
 import {
   getTorneosDestacados,
   formatPrize,
   formatCosto,
+  getStatusType,
+  getStatusLabel,
   stripHtml,
 } from '@/lib/torneos';
 
-// Icono por estado
-function getStatusIcon(estado: string) {
-  const map: Record<string, any> = {
-    Activo:     faCircle,
-    Abierto:    faStar,
-    Preparando: faHourglassHalf,
-    Cerrado:    faLock,
-  };
-  return map[estado] ?? faCircle;
-}
-
-// ── Stats (solo se usa en home) ───────────────────────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────────────
 async function getStats() {
   try {
     const db = getDb();
@@ -50,14 +42,43 @@ async function getStats() {
   }
 }
 
-// ── Datos estáticos ───────────────────────────────────────────────────────────
-const teams = [
-  { name: 'Phantom Edge', rank: 1, wins: 42, tag: 'PHX' },
-  { name: 'Storm Wolves', rank: 2, wins: 38, tag: 'STW' },
-  { name: 'Iron Veil',    rank: 3, wins: 35, tag: 'IVL' },
-  { name: 'Neon Rush',    rank: 4, wins: 31, tag: 'NRX' },
-];
+// ── Ranking dinámico ──────────────────────────────────────────────────────────
+interface RankingRow extends RowDataPacket {
+  equipo_id: number;
+  nombre: string;
+  iniciales: string;
+  puntos: number;
+  victorias: number;
+  derrotas: number;
+  partidas: number;
+}
 
+async function getRankingTop5(): Promise<RankingRow[]> {
+  try {
+    const db = getDb();
+    const [rows] = await db.query<RankingRow[]>(`
+      SELECT
+        c.equipo_id,
+        e.nombre,
+        e.iniciales,
+        c.puntos,
+        c.victorias,
+        c.derrotas,
+        c.partidas
+      FROM clasificacion c
+      INNER JOIN equipos e ON e.id = c.equipo_id
+      WHERE e.eliminado = 0 AND e.estado = 'Activo'
+      ORDER BY c.puntos DESC, c.victorias DESC
+      LIMIT 5
+    `);
+    return rows;
+  } catch (err) {
+    console.error('[Home] getRankingTop5 error:', err);
+    return [];
+  }
+}
+
+// ── Datos estáticos ───────────────────────────────────────────────────────────
 const news = [
   { title: 'Nephyx League Season 2: Las inscripciones están abiertas', excerpt: 'La segunda temporada de nuestra liga más grande ya está disponible. Forma tu equipo y compite por el primer lugar.', date: '18 Feb 2026', tag: 'Torneo' },
   { title: 'Cambios en el formato de torneos para 2026', excerpt: 'Este año implementamos el sistema Double Elimination en todas nuestras competencias principales para mayor emoción.', date: '10 Feb 2026', tag: 'Plataforma' },
@@ -66,9 +87,10 @@ const news = [
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default async function Home() {
-  const [stats, torneos] = await Promise.all([
+  const [stats, torneos, ranking] = await Promise.all([
     getStats(),
     getTorneosDestacados(6),
+    getRankingTop5(),
   ]);
 
   const statCards = [
@@ -149,14 +171,13 @@ export default async function Home() {
                 href={`/torneos/${t.slug}`}
                 className="home-tournament-card"
               >
-
                 {/* Banner */}
                 <div className="home-tournament-banner">
                   <TournamentBanner slug={t.slug} nombre={t.nombre} />
                   <div className="home-tournament-banner-overlay" />
-                  <span className="home-tournament-status">
-                    <FontAwesomeIcon icon={getStatusIcon(t.estado)} className="home-status-dot" />
-                    {t.estado}
+                  <span className={`home-tournament-status home-status-${getStatusType(t.estado)}`}>
+                    <FontAwesomeIcon icon={faCircle} className="home-status-dot" />
+                    {getStatusLabel(t.estado)}
                   </span>
                 </div>
 
@@ -167,7 +188,6 @@ export default async function Home() {
                     <p className="home-tournament-desc">{stripHtml(t.informacion)}</p>
                   )}
 
-                  {/* Chips bolsa / entrada */}
                   <div className="home-tournament-prizes">
                     <div className="home-tournament-prize-chip">
                       <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTrophy} /></div>
@@ -185,7 +205,6 @@ export default async function Home() {
                     </div>
                   </div>
 
-                  {/* Footer liga + temporada */}
                   <div className="home-tournament-footer">
                     {t.liga_nombre && (
                       <span className="home-tournament-meta-item">
@@ -211,31 +230,53 @@ export default async function Home() {
               <FontAwesomeIcon icon={faChartLine} className="home-section-icon" />
               Ranking de equipos
             </h2>
-            <p className="home-section-sub">Los mejores equipos de la Season 1</p>
+            <p className="home-section-sub">Clasificatoria 2026</p>
           </div>
           <Link href="/clasificatoria" className="home-see-all">
             Ver ranking <FontAwesomeIcon icon={faChevronRight} />
           </Link>
         </div>
-        <div className="home-ranking-table">
-          <div className="home-ranking-header">
-            <span>#</span><span>Equipo</span><span>Victorias</span>
+
+        {ranking.length === 0 ? (
+          <div className="home-tournaments-empty">
+            <FontAwesomeIcon icon={faChartLine} />
+            <p>No hay datos de clasificación disponibles.</p>
           </div>
-          {teams.map((t) => (
-            <div key={t.name} className={`home-ranking-row ${t.rank === 1 ? 'home-ranking-first' : ''}`}>
-              <span className="home-ranking-pos">
-                {t.rank === 1 ? <FontAwesomeIcon icon={faMedal} className="home-medal-gold" /> :
-                 t.rank === 2 ? <FontAwesomeIcon icon={faMedal} className="home-medal-silver" /> :
-                 t.rank === 3 ? <FontAwesomeIcon icon={faMedal} className="home-medal-bronze" /> : t.rank}
-              </span>
-              <span className="home-ranking-team">
-                <span className="home-team-tag">{t.tag}</span>
-                {t.name}
-              </span>
-              <span className="home-ranking-wins">{t.wins}W</span>
+        ) : (
+          <div className="home-ranking-table">
+            <div className="home-ranking-header">
+              <span>#</span>
+              <span>Equipo</span>
+              <span>Victorias</span>
             </div>
-          ))}
-        </div>
+            {ranking.map((t, idx) => {
+              const rank = idx + 1;
+              return (
+                <div
+                  key={t.equipo_id}
+                  className={`home-ranking-row ${rank === 1 ? 'home-ranking-first' : ''}`}
+                >
+                  <span className="home-ranking-pos">
+                    {rank === 1 ? <FontAwesomeIcon icon={faMedal} className="home-medal-gold" /> :
+                     rank === 2 ? <FontAwesomeIcon icon={faMedal} className="home-medal-silver" /> :
+                     rank === 3 ? <FontAwesomeIcon icon={faMedal} className="home-medal-bronze" /> : rank}
+                  </span>
+                  <span className="home-ranking-team">
+                    <TeamLogo
+                      iniciales={t.iniciales}
+                      nombre={t.nombre}
+                      size={28}
+                      className="home-ranking-logo"
+                    />
+                    <span className="home-team-tag">{t.iniciales}</span>
+                    {t.nombre}
+                  </span>
+                  <span className="home-ranking-wins">{t.victorias}W</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* ── NOTICIAS ── */}

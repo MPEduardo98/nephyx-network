@@ -28,6 +28,10 @@ body {
   flex-direction: column;
 }
 
+.layout-wrapper.auth-layout .content-wrapper {
+  margin-left: 0;
+}
+
 .content-wrapper {
   display: flex;
   flex-direction: column;

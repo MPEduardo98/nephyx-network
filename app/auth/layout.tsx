@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import AuthHeader from "@/components/AuthHeader";
 import Footer from "@/components/Footer";
 
 export default function AuthLayout({
@@ -9,7 +9,7 @@ export default function AuthLayout({
   return (
     <div className="layout-wrapper auth-layout">
       <div className="content-wrapper">
-        <Header />
+        <AuthHeader />
         <main className="main-content">
           {children}
         </main>
