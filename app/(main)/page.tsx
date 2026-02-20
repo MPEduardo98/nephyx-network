@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrophy, faUsers, faChevronRight, faCalendarAlt, faArrowRight,
-  faCircle, faGlobe, faShield, faClock, faTicket, faLayerGroup,
+  faCircle, faShield, faClock, faTicket, faLayerGroup, faBookOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { getDb } from '@/lib/mysql';
@@ -67,34 +67,50 @@ async function getRankingTop5(): Promise<RankingRow[]> {
   }
 }
 
-// ── Noticias estáticas ────────────────────────────────────────────────────────
-const news = [
-  {
-    title:   'Nephyx League Season 2: Las inscripciones están abiertas',
-    excerpt: 'La segunda temporada de nuestra liga más grande ya está disponible. Forma tu equipo y compite por el primer lugar.',
-    date:    '18 Feb 2026',
-    tag:     'Torneo',
-  },
-  {
-    title:   'Cambios en el formato de torneos para 2026',
-    excerpt: 'Este año implementamos el sistema Double Elimination en todas nuestras competencias principales para mayor emoción.',
-    date:    '10 Feb 2026',
-    tag:     'Plataforma',
-  },
-  {
-    title:   'Phantom Edge: El equipo revelación de la Season 1',
-    excerpt: 'Conoce al equipo que lo ganó todo en la primera temporada. Una historia de dedicación y estrategia en la Rift.',
-    date:    '02 Feb 2026',
-    tag:     'Equipos',
-  },
-];
+// ── Tipos Academy ─────────────────────────────────────────────────────────────
+type AcademyPost = RowDataPacket & {
+  id: number;
+  title: string;
+  description: string | null;
+  slug: string;
+  published_at: Date | null;
+};
+
+// ── Nephyx Academy desde BD ───────────────────────────────────────────────────
+async function getAcademyPosts(limit = 3): Promise<AcademyPost[]> {
+  try {
+    const db = getDb();
+    const [rows] = await db.query<AcademyPost[]>(
+      `SELECT id, title, description, slug, published_at
+       FROM content_pages
+       WHERE type = 'academy' AND status = 'published'
+       ORDER BY published_at DESC
+       LIMIT ?`,
+      [limit]
+    );
+    return rows;
+  } catch (err) {
+    console.error('[Home] getAcademyPosts error:', err);
+    return [];
+  }
+}
+
+function formatDate(date: Date | null): string {
+  if (!date) return '';
+  return new Date(date).toLocaleDateString('es-MX', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default async function Home() {
-  const [stats, torneos, ranking] = await Promise.all([
+  const [stats, torneos, ranking, academyPosts] = await Promise.all([
     getStats(),
     getTorneosDestacados(6),
     getRankingTop5(),
+    getAcademyPosts(3),
   ]);
 
   const statCards = [
@@ -231,42 +247,57 @@ export default async function Home() {
       {/* ── RANKING ── */}
       <RankingTable ranking={ranking} />
 
-      {/* ── NOTICIAS ── */}
+      {/* ── NEPHYX ACADEMY ── */}
       <section className="home-section">
         <div className="home-section-header">
           <div>
             <h2 className="home-section-title">
-              <FontAwesomeIcon icon={faGlobe} className="home-section-icon" />
-              Últimas noticias
+              <FontAwesomeIcon icon={faBookOpen} className="home-section-icon" />
+              Nephyx Academy
             </h2>
-            <p className="home-section-sub">Lo más reciente de Nephyx Network</p>
+            <p className="home-section-sub">Aprende, mejora y domina la Rift</p>
           </div>
+          <Link href="/academy" className="home-see-all">
+            Ver todo <FontAwesomeIcon icon={faChevronRight} />
+          </Link>
         </div>
-        <div className="home-news-grid">
-          {news.map((n) => (
-            <article key={n.title} className="home-news-card">
-              <div className="home-news-top">
-                <span className="home-news-tag">{n.tag}</span>
-                <span className="home-news-date">
-                  <FontAwesomeIcon icon={faClock} style={{ marginRight: '0.3rem', fontSize: '0.7rem' }} />
-                  {n.date}
-                </span>
-              </div>
-              <h3 className="home-news-title">{n.title}</h3>
-              <p className="home-news-excerpt">{n.excerpt}</p>
-              <Link href="#" className="home-news-link">
-                Leer más <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: '0.7rem' }} />
-              </Link>
-            </article>
-          ))}
-        </div>
+
+        {academyPosts.length === 0 ? (
+          <div className="home-tournaments-empty">
+            <FontAwesomeIcon icon={faBookOpen} />
+            <p>Próximamente contenido de Nephyx Academy.</p>
+          </div>
+        ) : (
+          <div className="home-news-grid">
+            {academyPosts.map((post) => (
+              <article key={post.id} className="home-news-card">
+                <div className="home-news-top">
+                  <span className="home-news-tag">Academy</span>
+                  {post.published_at && (
+                    <span className="home-news-date">
+                      <FontAwesomeIcon icon={faClock} style={{ marginRight: '0.3rem', fontSize: '0.7rem' }} />
+                      {formatDate(post.published_at)}
+                    </span>
+                  )}
+                </div>
+                <h3 className="home-news-title">{post.title}</h3>
+                {post.description && (
+                  <p className="home-news-excerpt">{post.description}</p>
+                )}
+                <Link href={`/academy/${post.slug}`} className="home-news-link">
+                  Leer más <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: '0.7rem' }} />
+                </Link>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── CTA ── */}
       <section className="home-cta">
         <div className="home-cta-inner">
           <FontAwesomeIcon icon={faShield} className="home-cta-icon" />
-          <h2 className="home-cta-title">¿Listo para la Rift?</h2>
+          <h2 className="home-cta-title">¿Listo para competir?</h2>
           <p className="home-cta-sub">
             Únete a miles de jugadores en la plataforma de League of Legends competitivo más activa de México.
           </p>

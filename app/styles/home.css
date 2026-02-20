@@ -284,7 +284,7 @@
   z-index: 2;
 }
 
-/* ── Status badge — un solo color accent para todos ── */
+/* ── Status badge ── */
 .home-tournament-status {
   display: inline-flex;
   align-items: center;
@@ -489,7 +489,7 @@
 }
 
 /* ════════════════════════════════════════
-   NEWS
+   ACADEMY / NEWS CARDS
 ════════════════════════════════════════ */
 .home-news-grid {
   display: grid;
@@ -560,16 +560,17 @@
 .home-news-link:hover { gap: 0.5rem; }
 
 /* ════════════════════════════════════════
-   CTA
+   CTA — siempre negro
 ════════════════════════════════════════ */
 .home-cta {
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
   text-align: center;
-  background: var(--panel-2);
+  background: #000000;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .home-cta-inner {
-  max-width: 520px;
+  max-width: 560px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -578,21 +579,21 @@
 }
 
 .home-cta-icon {
-  font-size: 1.75rem;
+  font-size: 2rem;
   color: var(--accent);
 }
 
 .home-cta-title {
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: 800;
-  color: var(--txt);
+  color: #ffffff;
   letter-spacing: -0.04em;
   margin: 0;
 }
 
 .home-cta-sub {
   font-size: 0.9rem;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.5);
   line-height: 1.7;
   margin: 0;
 }
