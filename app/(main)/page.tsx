@@ -2,14 +2,13 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrophy, faUsers, faChevronRight, faCalendarAlt, faArrowRight,
-  faCircle, faMedal, faGlobe, faChartLine, faShield, faClock,
-  faTicket, faLayerGroup,
+  faCircle, faGlobe, faShield, faClock, faTicket, faLayerGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { getDb } from '@/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
 import TournamentBanner from '@/components/TournamentBanner';
-import TeamLogo from '@/components/TeamLogo';
+import RankingTable, { type RankingRow } from '@/components/RankingTable';
 import {
   getTorneosDestacados,
   formatPrize,
@@ -42,17 +41,7 @@ async function getStats() {
   }
 }
 
-// ── Ranking dinámico ──────────────────────────────────────────────────────────
-interface RankingRow extends RowDataPacket {
-  equipo_id: number;
-  nombre: string;
-  iniciales: string;
-  puntos: number;
-  victorias: number;
-  derrotas: number;
-  partidas: number;
-}
-
+// ── Ranking ───────────────────────────────────────────────────────────────────
 async function getRankingTop5(): Promise<RankingRow[]> {
   try {
     const db = getDb();
@@ -78,11 +67,26 @@ async function getRankingTop5(): Promise<RankingRow[]> {
   }
 }
 
-// ── Datos estáticos ───────────────────────────────────────────────────────────
+// ── Noticias estáticas ────────────────────────────────────────────────────────
 const news = [
-  { title: 'Nephyx League Season 2: Las inscripciones están abiertas', excerpt: 'La segunda temporada de nuestra liga más grande ya está disponible. Forma tu equipo y compite por el primer lugar.', date: '18 Feb 2026', tag: 'Torneo' },
-  { title: 'Cambios en el formato de torneos para 2026', excerpt: 'Este año implementamos el sistema Double Elimination en todas nuestras competencias principales para mayor emoción.', date: '10 Feb 2026', tag: 'Plataforma' },
-  { title: 'Phantom Edge: El equipo revelación de la Season 1', excerpt: 'Conoce al equipo que lo ganó todo en la primera temporada. Una historia de dedicación y estrategia en la Rift.', date: '02 Feb 2026', tag: 'Equipos' },
+  {
+    title:   'Nephyx League Season 2: Las inscripciones están abiertas',
+    excerpt: 'La segunda temporada de nuestra liga más grande ya está disponible. Forma tu equipo y compite por el primer lugar.',
+    date:    '18 Feb 2026',
+    tag:     'Torneo',
+  },
+  {
+    title:   'Cambios en el formato de torneos para 2026',
+    excerpt: 'Este año implementamos el sistema Double Elimination en todas nuestras competencias principales para mayor emoción.',
+    date:    '10 Feb 2026',
+    tag:     'Plataforma',
+  },
+  {
+    title:   'Phantom Edge: El equipo revelación de la Season 1',
+    excerpt: 'Conoce al equipo que lo ganó todo en la primera temporada. Una historia de dedicación y estrategia en la Rift.',
+    date:    '02 Feb 2026',
+    tag:     'Equipos',
+  },
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -94,7 +98,7 @@ export default async function Home() {
   ]);
 
   const statCards = [
-    { value: stats.usuarios, label: 'Jugadores registrados', icon: faUsers },
+    { value: stats.usuarios, label: 'Jugadores registrados', icon: faUsers  },
     { value: stats.torneos,  label: 'Torneos realizados',    icon: faTrophy },
     { value: stats.activas,  label: 'Competencias activas',  icon: faShield },
   ];
@@ -122,7 +126,9 @@ export default async function Home() {
             <Link href="/auth/register" className="btn btn-primary home-hero-btn">
               Registrarse gratis <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '0.5rem' }} />
             </Link>
-            <Link href="/torneos" className="btn btn-secondary home-hero-btn">Ver torneos</Link>
+            <Link href="/torneos" className="btn btn-secondary home-hero-btn">
+              Ver torneos
+            </Link>
           </div>
           <div className="home-hero-social">
             <a href="#" className="home-social-pill" title="Discord"><FontAwesomeIcon icon={faDiscord} /> Discord</a>
@@ -166,11 +172,7 @@ export default async function Home() {
         ) : (
           <div className="home-tournaments-grid">
             {torneos.map((t) => (
-              <Link
-                key={t.id}
-                href={`/torneos/${t.slug}`}
-                className="home-tournament-card"
-              >
+              <Link key={t.id} href={`/torneos/${t.slug}`} className="home-tournament-card">
                 {/* Banner */}
                 <div className="home-tournament-banner">
                   <TournamentBanner slug={t.slug} nombre={t.nombre} />
@@ -190,14 +192,18 @@ export default async function Home() {
 
                   <div className="home-tournament-prizes">
                     <div className="home-tournament-prize-chip">
-                      <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTrophy} /></div>
+                      <div className="home-prize-chip-icon">
+                        <FontAwesomeIcon icon={faTrophy} />
+                      </div>
                       <div className="home-prize-chip-content">
                         <span className="home-prize-chip-label">Bolsa de premios</span>
                         <span className="home-prize-chip-value">{formatPrize(t.bolsa_premios)}</span>
                       </div>
                     </div>
                     <div className="home-tournament-prize-chip">
-                      <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTicket} /></div>
+                      <div className="home-prize-chip-icon">
+                        <FontAwesomeIcon icon={faTicket} />
+                      </div>
                       <div className="home-prize-chip-content">
                         <span className="home-prize-chip-label">Entrada</span>
                         <span className="home-prize-chip-value">{formatCosto(t.costo)}</span>
@@ -223,61 +229,7 @@ export default async function Home() {
       </section>
 
       {/* ── RANKING ── */}
-      <section className="home-section home-section-alt">
-        <div className="home-section-header">
-          <div>
-            <h2 className="home-section-title">
-              <FontAwesomeIcon icon={faChartLine} className="home-section-icon" />
-              Ranking de equipos
-            </h2>
-            <p className="home-section-sub">Clasificatoria 2026</p>
-          </div>
-          <Link href="/clasificatoria" className="home-see-all">
-            Ver ranking <FontAwesomeIcon icon={faChevronRight} />
-          </Link>
-        </div>
-
-        {ranking.length === 0 ? (
-          <div className="home-tournaments-empty">
-            <FontAwesomeIcon icon={faChartLine} />
-            <p>No hay datos de clasificación disponibles.</p>
-          </div>
-        ) : (
-          <div className="home-ranking-table">
-            <div className="home-ranking-header">
-              <span>#</span>
-              <span>Equipo</span>
-              <span>Victorias</span>
-            </div>
-            {ranking.map((t, idx) => {
-              const rank = idx + 1;
-              return (
-                <div
-                  key={t.equipo_id}
-                  className={`home-ranking-row ${rank === 1 ? 'home-ranking-first' : ''}`}
-                >
-                  <span className="home-ranking-pos">
-                    {rank === 1 ? <FontAwesomeIcon icon={faMedal} className="home-medal-gold" /> :
-                     rank === 2 ? <FontAwesomeIcon icon={faMedal} className="home-medal-silver" /> :
-                     rank === 3 ? <FontAwesomeIcon icon={faMedal} className="home-medal-bronze" /> : rank}
-                  </span>
-                  <span className="home-ranking-team">
-                    <TeamLogo
-                      iniciales={t.iniciales}
-                      nombre={t.nombre}
-                      size={28}
-                      className="home-ranking-logo"
-                    />
-                    <span className="home-team-tag">{t.iniciales}</span>
-                    {t.nombre}
-                  </span>
-                  <span className="home-ranking-wins">{t.victorias}W</span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+      <RankingTable ranking={ranking} />
 
       {/* ── NOTICIAS ── */}
       <section className="home-section">
