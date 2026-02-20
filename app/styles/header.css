@@ -271,9 +271,9 @@
 }
 
 .btn-primary {
-  background: var(--btn-primary);
+  background: var(--accent);
   border: none;
-  color: var(--txt-2);
+  color: white;
 }
 
 .btn-primary:hover {
@@ -281,9 +281,9 @@
 }
 
 .btn-secondary {
-  background: var(--panel-2);
+  background: var(--panel-3);
   border: 1px solid var(--borders);
-  color: var(--txt);
+  color: var(--txt-2);
 }
 
 .btn-secondary:hover {

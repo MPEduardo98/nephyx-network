@@ -122,11 +122,17 @@
 ──────────────────────────────────────── */
 .home-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   max-width: 1440px;
   width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
+  border-bottom: 1px solid var(--borders);
+}
+
+/* Cuando está debajo del ranking, borde arriba también */
+.home-stats-below {
+  border-top: 1px solid var(--borders);
   border-bottom: 1px solid var(--borders);
 }
 
@@ -135,6 +141,19 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.home-stat-card:nth-child(1) { transition-delay: 0s;     }
+.home-stat-card:nth-child(2) { transition-delay: 0.15s;  }
+.home-stat-card:nth-child(3) { transition-delay: 0.3s;   }
+.home-stat-card:nth-child(4) { transition-delay: 0.45s;  }
+
+.home-stat-card.stat-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .home-stat-card + .home-stat-card {
@@ -560,13 +579,13 @@
 .home-news-link:hover { gap: 0.5rem; }
 
 /* ════════════════════════════════════════
-   CTA — siempre negro
+   CTA — siempre negro (forzado)
 ════════════════════════════════════════ */
 .home-cta {
-  padding: 6rem 2rem;
-  text-align: center;
-  background: #000000;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6rem 2rem !important;
+  text-align: center !important;
+  background: #000000 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
 .home-cta-inner {
@@ -580,20 +599,20 @@
 
 .home-cta-icon {
   font-size: 2rem;
-  color: var(--accent);
+  color: var(--accent) !important;
 }
 
 .home-cta-title {
   font-size: 2.4rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #ffffff !important;
   letter-spacing: -0.04em;
   margin: 0;
 }
 
 .home-cta-sub {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5) !important;
   line-height: 1.7;
   margin: 0;
 }
@@ -624,7 +643,7 @@
   }
 
   .home-stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -638,9 +657,12 @@
     padding: 0 1.25rem;
   }
 
-  .home-stat-card:nth-child(3) {
-    grid-column: 1 / -1;
+  .home-stat-card:nth-child(odd) {
     border-left: none;
+  }
+
+  .home-stat-card:nth-child(3),
+  .home-stat-card:nth-child(4) {
     border-top: 1px solid var(--borders);
   }
 

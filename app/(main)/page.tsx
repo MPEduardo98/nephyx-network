@@ -3,12 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrophy, faUsers, faChevronRight, faCalendarAlt, faArrowRight,
   faCircle, faShield, faClock, faTicket, faLayerGroup, faBookOpen,
+  faBolt, faMedal,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { getDb } from '@/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
 import TournamentBanner from '@/components/TournamentBanner';
 import RankingTable, { type RankingRow } from '@/components/RankingTable';
+import StatsCounter from '@/components/StatsCounter';
 import {
   getTorneosDestacados,
   formatPrize,
@@ -22,22 +24,32 @@ import {
 async function getStats() {
   try {
     const db = getDb();
-    const [[usuariosRow], [torneosRow], [activasRow]] = await Promise.all([
+    const [[usuariosRow], [torneosRow], [activasRow], [premiosRow]] = await Promise.all([
       db.query<RowDataPacket[]>(`SELECT COUNT(*) AS total FROM usuarios WHERE estado = 'Activo'`),
       db.query<RowDataPacket[]>(`SELECT COUNT(*) AS total FROM torneos`),
       db.query<RowDataPacket[]>(`SELECT COUNT(*) AS total FROM torneos WHERE estado IN ('Abierto', 'Activo')`),
+      db.query<RowDataPacket[]>(`
+        SELECT COALESCE(SUM(tp.valor), 0) AS total
+        FROM torneos_premios tp
+        INNER JOIN torneos t ON t.id = tp.torneo_id
+        WHERE t.estado = 'Finalizado'
+      `),
     ]);
     const fmt = (n: number) =>
       n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M+` :
       n >= 1_000     ? `${Math.floor(n / 1_000)}K+`       : String(n);
+    const fmtPeso = (n: number) =>
+      n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(1)}M` :
+      n >= 1_000     ? `$${Math.floor(n / 1_000)}K`       : `$${n}`;
     return {
       usuarios: fmt(Number(usuariosRow[0]?.total ?? 0)),
       torneos:  fmt(Number(torneosRow[0]?.total  ?? 0)),
       activas:  String(activasRow[0]?.total ?? 0),
+      premios:  fmtPeso(Number(premiosRow[0]?.total ?? 0)),
     };
   } catch (err) {
     console.error('[Home] getStats error:', err);
-    return { usuarios: '—', torneos: '—', activas: '—' };
+    return { usuarios: '—', torneos: '—', activas: '—', premios: '—' };
   }
 }
 
@@ -117,6 +129,7 @@ export default async function Home() {
     { value: stats.usuarios, label: 'Jugadores registrados', icon: faUsers  },
     { value: stats.torneos,  label: 'Torneos realizados',    icon: faTrophy },
     { value: stats.activas,  label: 'Competencias activas',  icon: faShield },
+    { value: stats.premios,  label: 'Premios entregados',    icon: faMedal  },
   ];
 
   return (
@@ -152,17 +165,6 @@ export default async function Home() {
             <a href="#" className="home-social-pill" title="YouTube"><FontAwesomeIcon icon={faYoutube} /> YouTube</a>
           </div>
         </div>
-      </section>
-
-      {/* ── STATS ── */}
-      <section className="home-stats">
-        {statCards.map((s) => (
-          <div key={s.label} className="home-stat-card">
-            <div className="home-stat-icon"><FontAwesomeIcon icon={s.icon} /></div>
-            <div className="home-stat-value">{s.value}</div>
-            <div className="home-stat-label">{s.label}</div>
-          </div>
-        ))}
       </section>
 
       {/* ── TORNEOS ── */}
@@ -247,6 +249,9 @@ export default async function Home() {
       {/* ── RANKING ── */}
       <RankingTable ranking={ranking} />
 
+      {/* ── STATS ── */}
+      <StatsCounter stats={statCards} />
+
       {/* ── NEPHYX ACADEMY ── */}
       <section className="home-section">
         <div className="home-section-header">
@@ -296,7 +301,7 @@ export default async function Home() {
       {/* ── CTA ── */}
       <section className="home-cta">
         <div className="home-cta-inner">
-          <FontAwesomeIcon icon={faShield} className="home-cta-icon" />
+          <FontAwesomeIcon icon={faBolt} className="home-cta-icon" />
           <h2 className="home-cta-title">¿Listo para competir?</h2>
           <p className="home-cta-sub">
             Únete a miles de jugadores en la plataforma de League of Legends competitivo más activa de México.
