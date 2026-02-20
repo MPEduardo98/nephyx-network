@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrophy, faUsers, faChevronRight, faCalendarAlt, faArrowRight,
   faCircle, faMedal, faGlobe, faChartLine, faShield, faClock,
-  faTicket, faLayerGroup,
+  faTicket, faLayerGroup, faLock, faStar, faHourglassHalf,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { getDb } from '@/lib/mysql';
@@ -13,10 +13,19 @@ import {
   getTorneosDestacados,
   formatPrize,
   formatCosto,
-  getStatusType,
-  getStatusLabel,
   stripHtml,
 } from '@/lib/torneos';
+
+// Icono por estado
+function getStatusIcon(estado: string) {
+  const map: Record<string, any> = {
+    Activo:     faCircle,
+    Abierto:    faStar,
+    Preparando: faHourglassHalf,
+    Cerrado:    faLock,
+  };
+  return map[estado] ?? faCircle;
+}
 
 // ── Stats (solo se usa en home) ───────────────────────────────────────────────
 async function getStats() {
@@ -145,9 +154,9 @@ export default async function Home() {
                 <div className="home-tournament-banner">
                   <TournamentBanner slug={t.slug} nombre={t.nombre} />
                   <div className="home-tournament-banner-overlay" />
-                  <span className={`home-tournament-status home-status-${getStatusType(t.estado)}`}>
-                    <FontAwesomeIcon icon={faCircle} className="home-status-dot" />
-                    {getStatusLabel(t.estado)}
+                  <span className="home-tournament-status">
+                    <FontAwesomeIcon icon={getStatusIcon(t.estado)} className="home-status-dot" />
+                    {t.estado}
                   </span>
                 </div>
 

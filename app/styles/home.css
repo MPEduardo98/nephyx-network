@@ -225,13 +225,13 @@
 .home-tournaments-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 1.5rem;
   max-width: 1440px;
   margin: 0 auto;
 }
 
-/* Contenedor — clickeable, sin borde, solo sombra */
 .home-tournament-card {
+  min-width: 0;
   background: var(--panel);
   border-radius: var(--radius);
   overflow: hidden;
@@ -276,15 +276,15 @@
   pointer-events: none;
 }
 
-/* Badge de estado — sobre el banner */
+/* Badge de estado — sobre el banner, lado derecho */
 .home-tournament-banner .home-tournament-status {
   position: absolute;
   top: 0.8rem;
-  left: 0.8rem;
+  right: 0.8rem;
   z-index: 2;
 }
 
-/* ── Status badges ── */
+/* ── Status badge — un solo color accent para todos ── */
 .home-tournament-status {
   display: inline-flex;
   align-items: center;
@@ -295,11 +295,9 @@
   letter-spacing: 0.08em;
   border-radius: 4px;
   padding: 0.3rem 0.65rem;
+  background: var(--accent);
+  color: #fff;
 }
-
-.home-status-open   { background: #16a34a; color: #fff; }
-.home-status-active { background: var(--accent); color: #fff; }
-.home-status-soon   { background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.8); }
 
 .home-status-dot {
   font-size: 0.4rem;
