@@ -19,6 +19,7 @@ import {
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSidebar } from '@/context/SidebarContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const navItems = [
   {
@@ -76,6 +77,7 @@ export default function Sidebar() {
   const pathname   = usePathname();
 
   const { collapsed, collapse, expand, toggle, mobileOpen, closeMobile } = useSidebar();
+  const { theme, toggleTheme } = useTheme();
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -178,14 +180,19 @@ export default function Sidebar() {
         {/* ── Footer ── */}
         <div className="sb-footer">
 
-          {/* Modo claro */}
+          {/* Toggle de tema */}
           <div className="sb-footer-row">
             <span className="sb-icon">
               <FontAwesomeIcon icon={faSun} />
             </span>
             <span className="sb-label">Modo claro</span>
-            <label className="sb-toggle">
-              <input type="checkbox" className="sb-toggle-input" />
+            <label className="sb-toggle" aria-label="Cambiar tema">
+              <input
+                type="checkbox"
+                className="sb-toggle-input"
+                checked={theme === 'light'}
+                onChange={toggleTheme}
+              />
               <span className="sb-toggle-slider" />
             </label>
           </div>
@@ -204,19 +211,16 @@ export default function Sidebar() {
 
           {/* Usuario / Login */}
           {isLoggedIn ? (
-            <div className="sb-user-row">
-              <span className="sb-avatar">
-                <span className="sb-avatar-fallback">{userInitial}</span>
-                <span className="sb-avatar-online" />
-              </span>
-              <span className="sb-user-info">
-                <span className="sb-user-name">{session.user.name}</span>
-                <span className="sb-user-role">{session.user.grupo}</span>
-              </span>
+            <div className="sb-footer-row sb-user-row">
+              <div className="sb-avatar">{userInitial}</div>
+              <div className="sb-user-info">
+                <span className="sb-username">{session?.user?.name}</span>
+                <span className="sb-user-role">{session?.user?.grupo}</span>
+              </div>
               <button
                 className="sb-logout-btn"
                 onClick={() => signOut({ callbackUrl: '/' })}
-                title="Cerrar Sesión"
+                title="Cerrar sesión"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} />
               </button>
@@ -226,10 +230,9 @@ export default function Sidebar() {
               <span className="sb-icon">
                 <FontAwesomeIcon icon={faRightToBracket} />
               </span>
-              <span className="sb-label">Iniciar Sesión</span>
+              <span className="sb-label">Iniciar sesión</span>
             </Link>
           )}
-
         </div>
       </aside>
     </>
