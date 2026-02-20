@@ -20,7 +20,7 @@
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end; /* user-btn pegado a la derecha en desktop */
   position: relative;
   transition: padding 0.3s ease;
 }
@@ -31,7 +31,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  display: flex;
+  display: none; /* oculto en desktop */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -301,9 +301,16 @@
   transition: opacity 0.3s ease;
 }
 
+/* ===========================
+   RESPONSIVE
+=========================== */
 @media (max-width: 768px) {
   .header-inner {
     padding: 0.75rem 1rem;
+    justify-content: space-between; /* hamburger | logo | user-btn */
+  }
+
+  .hamburger {
+    display: flex; /* visible en móvil */
   }
 }
-
