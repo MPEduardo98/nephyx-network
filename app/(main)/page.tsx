@@ -1,4 +1,3 @@
-'use client';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,14 +15,39 @@ import {
   faClock,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { getDb } from '@/lib/mysql';
+import type { RowDataPacket } from 'mysql2';
 
-const stats = [
-  { value: '6K+', label: 'Jugadores registrados', icon: faUsers },
-  { value: '340+', label: 'Torneos realizados', icon: faTrophy },
-  { value: '4', label: 'Competencias activas', icon: faShield },
-  { value: '$250K', label: 'En premios repartidos', icon: faMedal },
-];
+// ── Fetch de stats en servidor ─────────────────────────────────────────────────
+async function getStats() {
+  try {
+    const db = getDb();
 
+    const [[usuariosRow], [torneosRow], [activasRow]] =
+      await Promise.all([
+        db.query<RowDataPacket[]>(`SELECT COUNT(*) AS total FROM usuarios WHERE estado = 'Activo'`),
+        db.query<RowDataPacket[]>(`SELECT COUNT(*) AS total FROM torneos`),
+        db.query<RowDataPacket[]>(`SELECT COUNT(*) AS total FROM torneos WHERE estado IN ('inscripcion', 'en_curso')`),
+      ]);
+
+    const fmt = (n: number): string => {
+      if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M+`;
+      if (n >= 1_000) return `${Math.floor(n / 1_000)}K+`;
+      return String(n);
+    };
+
+    return {
+      usuarios: fmt(Number(usuariosRow[0]?.total ?? 0)),
+      torneos: fmt(Number(torneosRow[0]?.total ?? 0)),
+      activas: String(activasRow[0]?.total ?? 0),
+    };
+  } catch (err) {
+    console.error('[Home] getStats error:', err);
+    return { usuarios: '—', torneos: '—', activas: '—', premios: '—' };
+  }
+}
+
+// ── Datos estáticos ────────────────────────────────────────────────────────────
 const tournaments = [
   {
     name: 'Nephyx League S2',
@@ -82,7 +106,16 @@ const news = [
   },
 ];
 
-export default function Home() {
+// ── Page (Server Component) ───────────────────────────────────────────────────
+export default async function Home() {
+  const stats = await getStats();
+
+  const statCards = [
+    { value: stats.usuarios, label: 'Jugadores registrados', icon: faUsers },
+    { value: stats.torneos,  label: 'Torneos realizados',    icon: faTrophy },
+    { value: stats.activas,  label: 'Competencias activas',  icon: faShield },
+  ];
+
   return (
     <div className="home-page">
 
@@ -126,7 +159,7 @@ export default function Home() {
 
       {/* ── STATS ── */}
       <section className="home-stats">
-        {stats.map((s) => (
+        {statCards.map((s) => (
           <div key={s.label} className="home-stat-card">
             <div className="home-stat-icon">
               <FontAwesomeIcon icon={s.icon} />
