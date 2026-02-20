@@ -7,36 +7,35 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1099;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
-  display: none;
-}
-
-.sidebar-overlay.active {
-  display: block;
-  opacity: 1;
-  pointer-events: auto;
+  transition: opacity 0.35s ease;
+  display: none; /* oculto en desktop */
 }
 
 @media (max-width: 768px) {
-  body:has(.sidebar-overlay.active) {
+  .sidebar-overlay {
+    display: block; /* siempre en el DOM en móvil */
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Solo bloquear scroll cuando el drawer está abierto */
+  body:has(.sidebar.mobile-open) {
     overflow: hidden !important;
-    position: fixed;
-    width: 100%;
-    height: 100%;
   }
 }
 
 /* ===========================
-   SIDEBAR BASE
-   sticky — no fixed, el contenido
-   no queda debajo del sidebar
+   SIDEBAR BASE — Desktop fixed
 =========================== */
 .sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1001;
@@ -91,7 +90,7 @@
   display: block;
 }
 
-/* Botón toggler — se mueve al colapsar */
+/* Botón toggler */
 .sb-collapse-btn {
   position: absolute;
   right: 20px;
@@ -105,7 +104,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 1rem;
+  font-size: 0.85rem;
   transition: transform 0.4s ease, background 0.3s ease, color 0.3s ease;
 }
 
@@ -213,11 +212,11 @@
   flex-shrink: 0;
 }
 
-/* ── Textos: visibles por defecto, se ocultan al colapsar ──────── */
+/* Textos: visibles por defecto, se ocultan al colapsar */
 .sb-label,
 .sb-chevron {
   opacity: 1;
-  transition: opacity 0.3s ease 0.15s;  /* aparece con delay */
+  transition: opacity 0.3s ease 0.15s;
 }
 
 .sb-label  { flex: 1; text-align: left; white-space: nowrap; }
@@ -570,36 +569,41 @@
 
 /* ===========================
    RESPONSIVE — MÓVIL
-   En móvil: sidebar es un drawer que
-   se abre desde la izquierda con overlay.
+   Drawer desde la izquierda con overlay.
    NO existe el estado collapsed en móvil.
 =========================== */
 @media (max-width: 768px) {
 
-  /* Sidebar oculto por defecto en móvil — fuera de pantalla */
+  /* Sidebar oculto fuera de pantalla por defecto */
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100dvh;
-    width: 280px !important;   /* siempre expandido cuando aparece */
+    bottom: 0;
+    height: 100% !important;
+    min-height: 100dvh;
+    width: 0 !important;        /* no ocupa espacio en el flujo */
     transform: translateX(-100%);
     transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    z-index: 1001;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
-  /* Abierto: desliza hacia adentro */
+  /* Al abrirse recupera su ancho */
   .sidebar.mobile-open {
+    width: 280px !important;
     transform: translateX(0);
   }
 
-  /* En móvil nunca hay estado collapsed visible */
+  /* Collapsed en móvil = sigue oculto */
   .sidebar.collapsed {
     width: 280px !important;
     transform: translateX(-100%);
   }
 
-  /* Todos los textos siempre visibles en móvil */
+  /* Todos los textos visibles en móvil (no hay estado collapsed) */
   .sidebar.collapsed .sb-label,
   .sidebar.collapsed .sb-chevron,
   .sidebar.collapsed .sb-sublabel,
@@ -610,17 +614,30 @@
     pointer-events: auto !important;
   }
 
-  /* Ocultar botón toggler de desktop en móvil */
-  .sb-collapse-btn { display: none !important; }
+  /* Mostrar botón cerrar en móvil */
+  .sb-collapse-btn { display: flex !important; }
 
   /* El logo-btn no colapsa en móvil */
   .sb-logo-btn { pointer-events: none; }
 
-  /* Nav list */
+  /* Header interno del drawer */
+  .sb-header {
+    padding: 20px 16px;
+  }
+
+  /* Nav — ocupa todo el espacio disponible y hace scroll */
+  .sb-nav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .sb-nav-list {
-    gap: 6px;
-    padding: 0 12px;
-    transform: translateY(10px);
+    gap: 4px;
+    padding: 0 10px;
+    transform: translateY(6px);
   }
 
   .sb-link {
@@ -633,16 +650,46 @@
 
   .sb-sublink { padding: 12px 12px; font-size: 0.88rem; }
 
-  .sb-footer { padding-bottom: 25px; }
+  .sb-footer { padding-bottom: 20px; }
 
   .sb-toggle { width: 45px; height: 24px; }
   .sb-toggle-slider::before { height: 18px; width: 18px; }
   .sb-toggle-input:checked + .sb-toggle-slider::before { transform: translateX(21px); }
 }
 
+/* Pantallas muy pequeñas */
 @media (max-width: 380px) {
   .sidebar { width: 240px !important; }
   .sb-link { gap: 12px; padding: 12px 8px; font-size: 0.85rem; }
   .sb-icon { font-size: 1rem; min-width: 18px; }
-  .sb-sublink { padding: 10px 10px; font-size: 0.85rem; }
+  .sb-sublink { padding: 10px; font-size: 0.85rem; }
+}
+
+/* ===========================
+   OVERRIDE — neutraliza reglas legacy de footer.css
+   que limitan la altura del sidebar en móvil
+=========================== */
+@media (max-width: 768px) {
+  .sidebar {
+    max-height: none !important;
+    height: 100dvh !important;
+    width: 280px !important;
+    border-bottom: none !important;
+  }
+
+  /* Permitir scroll normal en el contenido */
+  .content-wrapper {
+    overflow: visible !important;
+    overflow-y: auto !important;
+  }
+
+  .layout-wrapper {
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 300px;
+  }
 }

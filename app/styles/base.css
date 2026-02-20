@@ -34,7 +34,7 @@
   --btn-secondary: #f9f9f9;
 }
 
-/* Estilos base usando variables */
+/* Estilos base */
 html,
 body {
   height: 100%;
@@ -45,54 +45,37 @@ body {
   color: var(--txt);
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   margin: 0;
+  /* NO scrollbar-width: none aquí — bloqueaba scroll en móvil */
 }
 
 a {
   text-decoration: none;
 }
 
-/* Efectos gaming adicionales */
+/* Ocultar scrollbar solo en desktop, no en móvil */
+@media (min-width: 769px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html,
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 
 /* Animación de glitch para el logo */
 @keyframes glitch {
-
-  0%,
-  100% {
-    transform: translate(0);
-  }
-
-  20% {
-    transform: translate(-2px, 2px);
-  }
-
-  40% {
-    transform: translate(-2px, -2px);
-  }
-
-  60% {
-    transform: translate(2px, 2px);
-  }
-
-  80% {
-    transform: translate(2px, -2px);
-  }
+  0%, 100% { transform: translate(0); }
+  20%       { transform: translate(-2px, 2px); }
+  40%       { transform: translate(-2px, -2px); }
+  60%       { transform: translate(2px, 2px); }
+  80%       { transform: translate(2px, -2px); }
 }
 
 .glitch-hover:hover {
   animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-}
-
-/* Ocultar barra de scroll globalmente pero mantener funcionalidad */
-::-webkit-scrollbar {
-  display: none;
-}
-
-html,
-body {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
 }
 
 /* Selección de texto estilo terminal */
@@ -100,4 +83,3 @@ body {
   background: rgba(6, 182, 212, 0.3);
   color: #22d3ee;
 }
-

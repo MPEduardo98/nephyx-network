@@ -16,6 +16,7 @@ import {
   faCalendar,
   faBuilding, faEnvelope, faCircleQuestion,
   faSun, faScrewdriverWrench,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSidebar } from '@/context/SidebarContext';
 
@@ -102,8 +103,18 @@ export default function Sidebar() {
             <Image src="/logos/icon.png" alt="Nephyx" width={36} height={36} />
           </button>
           {!collapsed && (
-            <button className="sb-collapse-btn" onClick={collapse} aria-label="Cerrar">
-              ✕
+            <button
+              className="sb-collapse-btn"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+                  closeMobile();
+                } else {
+                  collapse();
+                }
+              }}
+              aria-label="Cerrar"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
             </button>
           )}
         </div>
