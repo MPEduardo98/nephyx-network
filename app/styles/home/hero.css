@@ -1,0 +1,119 @@
+/* ════════════════════════════════════════
+   HOME PAGE — Base
+════════════════════════════════════════ */
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ════════════════════════════════════════
+   HERO
+════════════════════════════════════════ */
+
+.home-hero {
+  position: relative;
+  padding: 9rem 2rem 7rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.home-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/banners/banner_prinicpal.jpg') no-repeat center center / cover;
+  filter: grayscale(1) brightness(0.2);
+  z-index: 0;
+}
+
+.home-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.home-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.home-live-dot {
+  font-size: 0.45rem;
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+.home-hero-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  margin: 0 0 1.25rem;
+}
+
+.home-hero-accent { color: var(--accent); }
+
+.home-hero-sub {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 2.25rem;
+  max-width: 500px;
+}
+
+.home-hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.25rem;
+}
+
+.home-hero-btn {
+  width: auto !important;
+  height: 50px;
+  padding: 0 1.75rem;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.home-hero-social {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.home-social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  padding: 0.3rem 0;
+  transition: color 0.2s;
+}
+
+.home-social-pill + .home-social-pill::before {
+  content: '·';
+  margin-right: 0.5rem;
+  color: rgba(255,255,255,0.2);
+}
+
+.home-social-pill:hover { color: #fff; }

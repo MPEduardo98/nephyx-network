@@ -1,0 +1,71 @@
+/* ════════════════════════════════════════
+   ACADEMY / NEWS CARDS
+════════════════════════════════════════ */
+
+.home-news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.home-news-card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.home-news-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-news-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.home-news-date {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.home-news-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--txt);
+  line-height: 1.4;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.home-news-excerpt {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
+}
+
+.home-news-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: fit-content;
+  transition: gap 0.2s;
+}
+
+.home-news-link:hover { gap: 0.5rem; }

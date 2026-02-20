@@ -1,0 +1,54 @@
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .home-tournaments-grid,
+  .home-news-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .home-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .home-hero    { padding: 3rem 1.25rem 2.5rem; }
+  .home-section { padding: 2rem 1.25rem; }
+  .home-cta     { padding: 3rem 1.25rem; }
+
+  .home-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 1.25rem;
+  }
+
+  .home-stat-card:nth-child(odd) {
+    border-left: none;
+  }
+
+  .home-stat-card:nth-child(3),
+  .home-stat-card:nth-child(4) {
+    border-top: 1px solid var(--borders);
+  }
+
+  .home-tournaments-grid,
+  .home-news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-ranking-header,
+  .home-ranking-row {
+    grid-template-columns: 36px 1fr 56px;
+  }
+
+  .home-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .home-tournament-prizes {
+    grid-template-columns: 1fr 1fr;
+  }
+}

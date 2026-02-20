@@ -1,0 +1,55 @@
+/* ════════════════════════════════════════
+   CTA — siempre negro (forzado)
+════════════════════════════════════════ */
+
+.home-cta {
+  padding: 6rem 2rem !important;
+  text-align: center !important;
+  background: #000000 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.home-cta-inner {
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.home-cta-icon {
+  font-size: 2rem;
+  color: var(--accent) !important;
+}
+
+.home-cta-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #ffffff !important;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.home-cta-sub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5) !important;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.home-cta-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.home-cta-btn {
+  width: auto !important;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+}
