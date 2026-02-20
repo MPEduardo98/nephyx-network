@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
+import { SidebarProvider } from "@/context/SidebarContext";
 
 export default function MainLayout({
   children,
@@ -8,15 +9,17 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="layout-wrapper">
-      <Sidebar />
-      <div className="content-wrapper">
-        <Header />
-        <main className="main-content">
-          {children}
-        </main>
-        <Footer />
+    <SidebarProvider>
+      <div className="layout-wrapper">
+        <Sidebar />
+        <div className="content-wrapper">
+          <Header />
+          <main className="main-content">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

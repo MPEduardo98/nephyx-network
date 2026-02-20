@@ -14,8 +14,10 @@ body {
 
 .layout-wrapper {
   display: flex;
+  flex-direction: row;   /* sidebar + content side by side */
   flex: 1;
   width: 100%;
+  min-height: 100vh;
 }
 
 .layout-wrapper.auth-layout {
@@ -26,14 +28,28 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 100%;
-  min-width: 0;
-  /* Prevent flex overload */
+  min-width: 0;          /* prevents flex overflow */
+  overflow: hidden;
 }
 
 .main-content {
   flex: 1;
   padding: 0;
   transition: all 0.3s ease;
+  min-width: 0;
 }
 
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 768px) {
+  /* En móvil el sidebar es fixed/drawer,
+     el content ocupa todo el ancho */
+  .layout-wrapper {
+    flex-direction: column;
+  }
+
+  .content-wrapper {
+    width: 100%;
+  }
+}

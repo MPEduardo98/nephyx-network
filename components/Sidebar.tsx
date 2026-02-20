@@ -1,22 +1,23 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUser, faTrophy, faBook, faRankingStar, faCircleInfo,
-  faChevronLeft, faChevronDown,
+  faChevronDown,
   faRightFromBracket, faRightToBracket,
-  faIdBadge, faPeopleGroup, faGamepad, faMedal,
+  faIdBadge, faPeopleGroup, faGamepad,
   faList, faCircleDot,
   faGavel, faCrown, faRoute, faBolt, faFire,
   faCalendar,
   faBuilding, faEnvelope, faCircleQuestion,
   faSun, faScrewdriverWrench,
 } from '@fortawesome/free-solid-svg-icons';
+import { useSidebar } from '@/context/SidebarContext';
 
 const navItems = [
   {
@@ -34,19 +35,19 @@ const navItems = [
     name: 'Torneos',
     icon: faTrophy,
     sublinks: [
-      { name: 'Ver todos los torneos', href: '/torneos',          icon: faList      },
-      { name: 'Torneo Activo',         href: '/torneos/activo-1', icon: faCircleDot },
+      { name: 'Ver todos',     href: '/torneos',          icon: faList      },
+      { name: 'Torneo Activo', href: '/torneos/activo-1', icon: faCircleDot },
     ],
   },
   {
     name: 'Reglamentos',
     icon: faBook,
     sublinks: [
-      { name: 'Reglamento General',   href: '/reglamentos/general',      icon: faGavel },
-      { name: 'Nephyx League',        href: '/reglamentos/league',       icon: faCrown },
-      { name: 'Nephyx Circuit',       href: '/reglamentos/circuit',      icon: faRoute },
-      { name: 'Nephyx Clash',         href: '/reglamentos/clash',        icon: faBolt  },
-      { name: 'Nephyx Pre-Temporada', href: '/reglamentos/pretemporada', icon: faFire  },
+      { name: 'General',       href: '/reglamentos/general',      icon: faGavel },
+      { name: 'League',        href: '/reglamentos/league',       icon: faCrown },
+      { name: 'Circuit',       href: '/reglamentos/circuit',      icon: faRoute },
+      { name: 'Clash',         href: '/reglamentos/clash',        icon: faBolt  },
+      { name: 'Pre-Temporada', href: '/reglamentos/pretemporada', icon: faFire  },
     ],
   },
   {
@@ -73,218 +74,153 @@ export default function Sidebar() {
   const isAdmin    = session?.user?.grupo === 'admin';
   const pathname   = usePathname();
 
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, collapse, expand, toggle, mobileOpen, closeMobile } = useSidebar();
+
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const expand = () => { if (collapsed) setCollapsed(false); };
-
-  const toggleDropdown = (name: string) =>
+  const toggleDropdown = (name: string) => {
+    if (collapsed) { expand(); return; }
     setOpenDropdown(openDropdown === name ? null : name);
-
-  const collapse = () => {
-    setCollapsed(true);
-    setOpenDropdown(null);
   };
 
   const userInitial = session?.user?.name?.[0]?.toUpperCase() ?? 'U';
 
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <>
+      {/* Overlay móvil */}
+      <div
+        className={`sidebar-overlay ${mobileOpen ? 'active' : ''}`}
+        onClick={closeMobile}
+        aria-hidden="true"
+      />
 
-      {/* ── Header: logo abre | flecha cierra ───────────────── */}
-      <div className="sidebar-header">
-        {/* Col 1: logo — abre el sidebar */}
-        <div className="sidebar-col-icons">
-          <button
-            className="sidebar-logo-btn"
-            onClick={() => collapsed ? expand() : collapse()}
-            aria-label={collapsed ? 'Expandir' : 'Colapsar'}
-          >
-            <Image src="/logos/icon.png" alt="Nephyx" width={42} height={42} />
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+
+        {/* ── Header ── */}
+        <div className="sb-header">
+          <button className="sb-logo-btn" onClick={toggle} aria-label="Toggle sidebar">
+            <Image src="/logos/icon.png" alt="Nephyx" width={36} height={36} />
           </button>
+          {!collapsed && (
+            <button className="sb-collapse-btn" onClick={collapse} aria-label="Cerrar">
+              ✕
+            </button>
+          )}
         </div>
 
-        {/* Col 2: flecha — solo visible en expandido, cierra el sidebar */}
-        <div className="sidebar-col-content sidebar-header-content">
-          <button
-            className="sidebar-close-btn"
-            onClick={() => collapse()}
-            aria-label="Cerrar sidebar"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-        </div>
-      </div>
+        {/* ── Nav ── */}
+        <nav className="sb-nav">
+          <ul className="sb-nav-list">
+            {navItems.map((item, i) => {
+              if (item.authOnly && !isLoggedIn) return null;
 
-      {/* ── Nav ─────────────────────────────────────────────── */}
-      <nav className="sidebar-nav">
-        <ul className="nav-list primary-nav">
-          {navItems.map((item, index) => {
-            if (item.authOnly && !isLoggedIn) return null;
+              const isOpen      = openDropdown === item.name;
+              const hasSublinks = !!item.sublinks?.length;
+              const dropH       = hasSublinks ? item.sublinks!.length * 52 + 4 : 0;
 
-            const isOpen         = openDropdown === item.name;
-            const hasSublinks    = !!item.sublinks?.length;
-            const dropdownHeight = hasSublinks ? item.sublinks!.length * 52 + 8 : 0;
-
-            return (
-              <li key={index} className={`nav-item ${isOpen ? 'open' : ''}`}>
-                <button
-                  className="nav-link"
-                  onClick={() => collapsed ? expand() : toggleDropdown(item.name)}
-                  title={collapsed ? item.name : ''}
-                >
-                  <span className="sidebar-col-icons">
-                    <FontAwesomeIcon icon={item.icon} />
-                  </span>
-                  <span className="sidebar-col-content nav-link-content">
-                    <span className="nav-label">{item.name}</span>
-                    {hasSublinks && (
-                      <FontAwesomeIcon icon={faChevronDown} className="dropdown-icon" />
-                    )}
-                  </span>
-                </button>
-
-                {/* Sublinks — solo cuando expandido */}
-                {hasSublinks && !collapsed && (
-                  <ul
-                    className="dropdown-menu"
-                    style={{ height: isOpen ? `${dropdownHeight}px` : '0px' }}
+              return (
+                <li key={i} className={`sb-item ${isOpen ? 'open' : ''}`}>
+                  <button
+                    className="sb-link"
+                    onClick={() => toggleDropdown(item.name)}
+                    title={collapsed ? item.name : ''}
                   >
-                    {item.sublinks!.map((sub, si) => (
-                      <li key={si} className="nav-item">
-                        <Link
-                          href={sub.href}
-                          className={`nav-link dropdown-link ${pathname === sub.href ? 'active' : ''}`}
-                        >
-                          <span className="sidebar-col-icons">
-                            <FontAwesomeIcon icon={sub.icon} />
-                          </span>
-                          <span className="sidebar-col-content">
-                            <span className="nav-label">{sub.name}</span>
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+                    <span className="sb-icon">
+                      <FontAwesomeIcon icon={item.icon} />
+                    </span>
+                    <span className="sb-label">{item.name}</span>
+                    {hasSublinks && !collapsed && (
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className={`sb-chevron ${isOpen ? 'open' : ''}`}
+                      />
+                    )}
+                  </button>
 
-      {/* ── Footer ──────────────────────────────────────────── */}
-      <div className="sidebar-footer">
+                  {hasSublinks && (
+                    <ul
+                      className="sb-dropdown"
+                      style={{ height: isOpen && !collapsed ? `${dropH}px` : '0px' }}
+                    >
+                      {item.sublinks!.map((sub, si) => (
+                        <li key={si}>
+                          <Link
+                            href={sub.href}
+                            className={`sb-sublink ${pathname === sub.href ? 'active' : ''}`}
+                            onClick={closeMobile}
+                          >
+                            <span className="sb-subicon">
+                              <FontAwesomeIcon icon={sub.icon} />
+                            </span>
+                            <span className="sb-sublabel">{sub.name}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-        {/* Modo claro — el icono NO abre el sidebar */}
-        <div className="sidebar-footer-row">
-          <span className="sidebar-col-icons">
-            <FontAwesomeIcon icon={faSun} />
-          </span>
-          <span className="sidebar-col-content sidebar-footer-content">
-            <span className="sidebar-footer-label">Modo claro</span>
-            <label className="theme-toggle__switch">
-              <input type="checkbox" className="theme-toggle__input" />
-              <span className="theme-toggle__slider" />
+        {/* ── Footer ── */}
+        <div className="sb-footer">
+
+          {/* Modo claro */}
+          <div className="sb-footer-row">
+            <span className="sb-icon">
+              <FontAwesomeIcon icon={faSun} />
+            </span>
+            <span className="sb-label">Modo claro</span>
+            <label className="sb-toggle">
+              <input type="checkbox" className="sb-toggle-input" />
+              <span className="sb-toggle-slider" />
             </label>
-          </span>
-        </div>
+          </div>
 
-        {/* Nephyx Panel */}
-        {isAdmin && (
-          collapsed ? (
-            <button className="sidebar-footer-row" onClick={expand}>
-              <span className="sidebar-col-icons">
+          {/* Nephyx Panel (admin) */}
+          {isAdmin && (
+            <Link href="/admin/dashboard" className="sb-footer-row" title="Nephyx Panel">
+              <span className="sb-icon">
                 <FontAwesomeIcon icon={faScrewdriverWrench} />
               </span>
-              <span className="sidebar-col-content">
-                <span className="sidebar-footer-label">Nephyx Panel</span>
-              </span>
-            </button>
-          ) : (
-            <Link href="/admin/dashboard" className="sidebar-footer-row">
-              <span className="sidebar-col-icons">
-                <FontAwesomeIcon icon={faScrewdriverWrench} />
-              </span>
-              <span className="sidebar-col-content">
-                <span className="sidebar-footer-label">Nephyx Panel</span>
-              </span>
+              <span className="sb-label">Nephyx Panel</span>
             </Link>
-          )
-        )}
+          )}
 
-        {/* Divider */}
-        <div className="sidebar-footer-divider" />
+          <div className="sb-divider" />
 
-        {/* Usuario / Login */}
-        {isLoggedIn ? (
-          collapsed ? (
-            <button className="sidebar-footer-row sidebar-user-row" onClick={expand}>
-              <span className="sidebar-col-icons">
-                <span className="sidebar-user-avatar">
-                  <span className="sidebar-avatar-fallback">{userInitial}</span>
-                  <span className="sidebar-user-online" />
-                </span>
+          {/* Usuario / Login */}
+          {isLoggedIn ? (
+            <div className="sb-user-row">
+              <span className="sb-avatar">
+                <span className="sb-avatar-fallback">{userInitial}</span>
+                <span className="sb-avatar-online" />
               </span>
-              <span className="sidebar-col-content sidebar-user-content">
-                <span className="sidebar-user-info">
-                  <span className="sidebar-user-name">{session.user.name}</span>
-                  <span className="sidebar-user-role">{session.user.grupo}</span>
-                </span>
-                <button
-                  className="sidebar-logout-btn"
-                  onClick={(e) => { e.stopPropagation(); signOut({ callbackUrl: '/' }); }}
-                  title="Cerrar Sesión"
-                >
-                  <FontAwesomeIcon icon={faRightFromBracket} />
-                </button>
+              <span className="sb-user-info">
+                <span className="sb-user-name">{session.user.name}</span>
+                <span className="sb-user-role">{session.user.grupo}</span>
               </span>
-            </button>
-          ) : (
-            <div className="sidebar-footer-row sidebar-user-row">
-              <span className="sidebar-col-icons">
-                <span className="sidebar-user-avatar">
-                  <span className="sidebar-avatar-fallback">{userInitial}</span>
-                  <span className="sidebar-user-online" />
-                </span>
-              </span>
-              <span className="sidebar-col-content sidebar-user-content">
-                <span className="sidebar-user-info">
-                  <span className="sidebar-user-name">{session.user.name}</span>
-                  <span className="sidebar-user-role">{session.user.grupo}</span>
-                </span>
-                <button
-                  className="sidebar-logout-btn"
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  title="Cerrar Sesión"
-                >
-                  <FontAwesomeIcon icon={faRightFromBracket} />
-                </button>
-              </span>
+              <button
+                className="sb-logout-btn"
+                onClick={() => signOut({ callbackUrl: '/' })}
+                title="Cerrar Sesión"
+              >
+                <FontAwesomeIcon icon={faRightFromBracket} />
+              </button>
             </div>
-          )
-        ) : (
-          collapsed ? (
-            <button className="sidebar-footer-row" onClick={expand}>
-              <span className="sidebar-col-icons">
-                <FontAwesomeIcon icon={faRightToBracket} />
-              </span>
-              <span className="sidebar-col-content">
-                <span className="sidebar-login-label">Iniciar Sesión</span>
-              </span>
-            </button>
           ) : (
-            <Link href="/auth/login" className="sidebar-footer-row">
-              <span className="sidebar-col-icons">
+            <Link href="/auth/login" className="sb-footer-row" onClick={closeMobile}>
+              <span className="sb-icon">
                 <FontAwesomeIcon icon={faRightToBracket} />
               </span>
-              <span className="sidebar-col-content">
-                <span className="sidebar-login-label">Iniciar Sesión</span>
-              </span>
+              <span className="sb-label">Iniciar Sesión</span>
             </Link>
-          )
-        )}
-      </div>
-    </aside>
+          )}
+
+        </div>
+      </aside>
+    </>
   );
 }

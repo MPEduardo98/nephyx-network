@@ -6,21 +6,19 @@ import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faUser,
-  faTrophy,
-  faCog,
-  faRightFromBracket,
-  faRightToBracket,
-  faUserPlus,
+  faUser, faTrophy, faCog,
+  faRightFromBracket, faRightToBracket, faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
+import { useSidebar } from '@/context/SidebarContext';
 
 export default function Header() {
   const { data: session, status } = useSession();
   const isLoggedIn = status === 'authenticated';
-  const isLoading = status === 'loading';
+  const isLoading  = status === 'loading';
 
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { mobileOpen, toggleMobile } = useSidebar();
+
+  const [scrolled, setScrolled]               = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -40,32 +38,33 @@ export default function Header() {
   }, []);
 
   const authMenuItems = [
-    { name: 'Mi Perfil', href: '/perfil', icon: faUser },
-    { name: 'Mis Torneos', href: '/mis-torneos', icon: faTrophy },
-    { name: 'Configuración', href: '/configuracion', icon: faCog },
+    { name: 'Mi Perfil',      href: '/perfil',         icon: faUser   },
+    { name: 'Mis Torneos',    href: '/mis-torneos',    icon: faTrophy },
+    { name: 'Configuración',  href: '/configuracion',  icon: faCog    },
   ];
 
   return (
     <>
       <header className={`header ${scrolled ? 'scrolled' : ''}`}>
         <div className="header-inner">
-          {/* Hamburger Menu */}
+
+          {/* Burger — solo visible en móvil */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={toggleMobile}
             aria-label="Abrir menú"
-            className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}
+            className={`hamburger ${mobileOpen ? 'open' : ''}`}
           >
             <div className="hamburger-line line-1" />
             <div className="hamburger-line line-2" />
             <div className="hamburger-line line-3" />
           </button>
 
-          {/* Logo */}
+          {/* Logo centrado */}
           <Link href="/" className="logo-link">
             <Image src="/logos/logo.svg" alt="Nephyx logo" width={160} height={160} />
           </Link>
 
-          {/* User Dropdown */}
+          {/* User dropdown */}
           <div className="user-dropdown-container" style={{ position: 'relative' }}>
             <button
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -77,18 +76,15 @@ export default function Header() {
 
             <div className={`user-dropdown ${userDropdownOpen ? 'open' : ''}`}>
               {isLoading ? (
-                // Skeleton mientras carga
                 <div className="user-info">
                   <div className="name" style={{ opacity: 0.4 }}>Cargando...</div>
                 </div>
               ) : isLoggedIn ? (
-                // ── SESIÓN ACTIVA ──────────────────────────────────
                 <>
                   <div className="user-info">
                     <div className="name">{session.user.name}</div>
                     <div className="email">{session.user.email}</div>
                   </div>
-
                   {authMenuItems.map((item) => (
                     <Link
                       key={item.name}
@@ -100,12 +96,8 @@ export default function Header() {
                       {item.name}
                     </Link>
                   ))}
-
                   <button
-                    onClick={() => {
-                      setUserDropdownOpen(false);
-                      signOut({ callbackUrl: '/' });
-                    }}
+                    onClick={() => { setUserDropdownOpen(false); signOut({ callbackUrl: '/' }); }}
                     className="menu-item"
                     style={{ width: '100%', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--accent)', textAlign: 'left' }}
                   >
@@ -114,27 +106,16 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                // ── SIN SESIÓN ─────────────────────────────────────
                 <>
                   <div className="user-info">
                     <div className="name">Bienvenido</div>
                     <div className="email">Inicia sesión para continuar</div>
                   </div>
-
-                  <Link
-                    href="/auth/login"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="menu-item"
-                  >
+                  <Link href="/auth/login" onClick={() => setUserDropdownOpen(false)} className="menu-item">
                     <FontAwesomeIcon icon={faRightToBracket} />
                     Iniciar Sesión
                   </Link>
-
-                  <Link
-                    href="/auth/register"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="menu-item"
-                  >
+                  <Link href="/auth/register" onClick={() => setUserDropdownOpen(false)} className="menu-item">
                     <FontAwesomeIcon icon={faUserPlus} />
                     Registrarse
                   </Link>
@@ -142,10 +123,9 @@ export default function Header() {
               )}
             </div>
           </div>
+
         </div>
       </header>
-
-      {mobileMenuOpen && <div className="overlay" onClick={() => setMobileMenuOpen(false)} />}
     </>
   );
 }
