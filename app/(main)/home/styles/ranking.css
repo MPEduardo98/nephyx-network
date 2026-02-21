@@ -1,68 +1,173 @@
 /* ════════════════════════════════════════
-   RANKING
+   RANKING — Layout split tipo hero
+   Intro + KPIs izquierda | Tabla derecha
 ════════════════════════════════════════ */
 
-.home-ranking-wrap {
-  max-width: 1440px;
-  margin: 0 auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
+.home-ranking {
+  position: relative;
+  width: 100%;
+  min-height: 95dvh;
+  background: #0a0a0a;
+  padding: 7rem 2rem;
+  display: flex;
+  align-items: center;
   overflow: hidden;
 }
 
-/* Cabecera de columnas */
+/* Fondo con overlay muy sutil */
+.home-ranking::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/banners/banner_prinicpal.jpg') no-repeat center center / cover;
+  filter: grayscale(1) brightness(0.03);
+  z-index: 0;
+}
+
+.home-ranking-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+/* ── Columna izquierda: intro ── */
+.home-ranking-intro {
+  position: sticky;
+  top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.home-ranking-title {
+  font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin: 0.4rem 0 1.25rem;
+}
+
+.home-ranking-accent { color: var(--accent); }
+
+.home-ranking-sub {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.8;
+  margin: 0 0 2.5rem;
+}
+
+/* KPIs verticales */
+.home-ranking-kpis {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(255,255,255,0.07);
+  margin-bottom: 2.5rem;
+}
+
+.home-ranking-kpi {
+  background: rgba(255,255,255,0.03);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.home-ranking-kpi-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.home-ranking-kpi-label {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.home-ranking-link {
+  width: auto !important;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+}
+
+/* ── Tabla a la derecha ── */
+.home-ranking-table-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Estilos de filas (heredados de RankingTable pero con fondo oscuro) */
+.home-ranking-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
 .home-ranking-cols {
   display: grid;
   grid-template-columns: 52px 1fr 64px 64px 64px 80px 72px 90px;
-  padding: 0.7rem 1.5rem;
+  padding: 0.85rem 1.75rem;
   font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  background: var(--panel-2);
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.04);
 }
 
-/* Fila */
 .home-ranking-row {
   display: grid;
   grid-template-columns: 52px 1fr 64px 64px 64px 80px 72px 90px;
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.75rem;
   align-items: center;
-  background: var(--panel);
+  background: rgba(255,255,255,0.02);
   transition: background 0.15s;
 }
 
 .home-ranking-row:not(:last-child) {
-  border-bottom: 1px solid var(--borders);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .home-ranking-row--first {
-  background: var(--hover);
+  background: rgba(255,255,255,0.05);
 }
 
-/* Pos */
-.home-ranking-pos {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--muted);
+.home-ranking-row:hover {
+  background: rgba(255,255,255,0.06);
 }
+
+.home-ranking-pos { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.4); }
 
 .medal-gold   { color: #f59e0b; }
 .medal-silver { color: #94a3b8; }
 .medal-bronze { color: #b45309; }
 
-/* Equipo */
 .home-ranking-team {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.7rem;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .home-ranking-name {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--txt);
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -70,38 +175,76 @@
 
 .home-ranking-tag {
   flex-shrink: 0;
-  font-size: 0.58rem;
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   color: var(--accent);
-  background: var(--panel-2);
-  padding: 0.13rem 0.45rem;
+  background: rgba(255,255,255,0.06);
+  padding: 0.15rem 0.5rem;
 }
 
-/* Células centrales */
-.home-ranking-cell {
-  font-size: 0.8rem;
-  color: var(--muted);
-  text-align: center;
-}
+.home-ranking-cell { font-size: 0.82rem; color: rgba(255,255,255,0.4); text-align: center; }
+.home-ranking-wins   { font-size: 0.82rem; font-weight: 700; color: #22c55e; text-align: center; }
+.home-ranking-losses { font-size: 0.82rem; font-weight: 700; color: #ef4444; text-align: center; }
 
-.home-ranking-wins   { font-size: 0.8rem; font-weight: 700; color: #22c55e; text-align: center; }
-.home-ranking-losses { font-size: 0.8rem; font-weight: 700; color: #ef4444; text-align: center; }
-
-.home-ranking-wr       { font-size: 0.8rem; font-weight: 700; text-align: center; }
+.home-ranking-wr        { font-size: 0.82rem; font-weight: 700; text-align: center; }
 .home-ranking-wr.wr-high { color: #22c55e; }
-.home-ranking-wr.wr-mid  { color: var(--txt); }
+.home-ranking-wr.wr-mid  { color: rgba(255,255,255,0.7); }
 .home-ranking-wr.wr-low  { color: #ef4444; }
 
-.home-ranking-pts {
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: var(--accent);
-  text-align: center;
+.home-ranking-pts { font-size: 0.92rem; font-weight: 800; color: var(--accent); text-align: center; }
+
+.home-ranking-trend            { font-size: 0.85rem; text-align: center; }
+.home-ranking-trend.trend-up   { color: #22c55e; }
+.home-ranking-trend.trend-flat { color: rgba(255,255,255,0.3); }
+.home-ranking-trend.trend-down { color: #ef4444; }
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .home-ranking-inner {
+    grid-template-columns: 280px 1fr;
+    gap: 3.5rem;
+  }
 }
 
-/* Tendencia */
-.home-ranking-trend            { font-size: 0.82rem; text-align: center; }
-.home-ranking-trend.trend-up   { color: #22c55e; }
-.home-ranking-trend.trend-flat { color: var(--muted); }
-.home-ranking-trend.trend-down { color: #ef4444; }
+@media (max-width: 1024px) {
+  .home-ranking-inner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .home-ranking-intro { position: static; }
+
+  .home-ranking-kpis { flex-direction: row; }
+  .home-ranking-kpi { flex: 1; }
+
+  .home-ranking-cols,
+  .home-ranking-row {
+    grid-template-columns: 44px 1fr 52px 52px 52px 68px 60px 80px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-ranking { padding: 5rem 1.25rem; min-height: unset; }
+
+  .home-ranking-kpis { flex-direction: column; }
+
+  .home-ranking-link { align-self: stretch; justify-content: center; width: 100% !important; }
+
+  .home-ranking-cols,
+  .home-ranking-row {
+    grid-template-columns: 40px 1fr 48px 48px 56px;
+    font-size: 0.7rem;
+  }
+
+  .home-ranking-cols > span:nth-child(6),
+  .home-ranking-row  > span:nth-child(6),
+  .home-ranking-cols > span:nth-child(8),
+  .home-ranking-row  > span:nth-child(8) {
+    display: none;
+  }
+}

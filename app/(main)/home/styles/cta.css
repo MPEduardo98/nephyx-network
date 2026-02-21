@@ -1,44 +1,64 @@
 /* ════════════════════════════════════════
-   CTA — siempre negro (forzado)
+   CTA FINAL
+   Grande y extendido como el hero
 ════════════════════════════════════════ */
 
 .home-cta {
-  padding: 6rem 2rem;
+  position: relative;
+  width: 100%;
+  padding: 7rem 2rem;
   text-align: center;
   background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Fondo sutil con la misma imagen del hero */
+.home-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/banners/banner_prinicpal.jpg') no-repeat center center / cover;
+  filter: grayscale(1) brightness(0.08);
+  z-index: 0;
 }
 
 .home-cta-inner {
-  max-width: 560px;
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .home-cta-label {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent);
 }
 
 .home-cta-title {
-  font-size: 2.4rem;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
   font-weight: 800;
   color: #ffffff;
   letter-spacing: -0.04em;
   margin: 0;
-  line-height: 1.1;
+  line-height: 1.08;
 }
 
 .home-cta-sub {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.45);
-  line-height: 1.7;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.75;
   margin: 0;
+  max-width: 480px;
 }
 
 .home-cta-actions {
@@ -46,13 +66,31 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 
 .home-cta-btn {
   width: auto !important;
-  padding: 0.75rem 1.75rem;
-  font-size: 0.88rem;
+  height: 52px;
+  padding: 0 1.85rem;
+  font-size: 0.92rem;
   display: inline-flex;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .home-cta {
+    padding: 5rem 1.25rem;
+    min-height: unset;
+  }
+
+  .home-cta-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .home-cta-btn {
+    width: 100% !important;
+    justify-content: center;
+  }
 }

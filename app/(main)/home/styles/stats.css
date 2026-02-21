@@ -1,8 +1,6 @@
 /* ════════════════════════════════════════
    STATS — Franja #131313
-   Vive al fondo del hero (hijo directo)
-   StatsCounter renderiza:
-   <section class="home-stats home-stats-below">
+   Vive al fondo del hero
 ════════════════════════════════════════ */
 
 .home-stats,
@@ -20,7 +18,6 @@
   padding: 0 2rem;
 }
 
-/* ── Stat card ── */
 .home-stat-card,
 .home-stat-item {
   padding: 2rem 1.5rem;

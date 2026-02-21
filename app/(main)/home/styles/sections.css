@@ -1,51 +1,16 @@
 /* ════════════════════════════════════════
-   SECCIONES BASE
-   Cada sección tiene fondo propio y padding
-   generoso para sentirse como "página propia"
+   SECCIONES BASE — Labels y utilidades
+   compartidas entre todas las secciones
 ════════════════════════════════════════ */
 
-.home-section {
-  padding: 5rem 2rem;
-  background: var(--bg);
-}
-
-/* Sección alternativa — panel más oscuro */
-.home-section-alt {
-  background: var(--panel-2);
-}
-
-/* ── Header de sección ── */
-.home-section-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  max-width: 1440px;
-  margin: 0 auto 2.5rem;
-}
-
 .home-section-label {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 0.4rem;
-}
-
-.home-section-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--txt);
-  margin: 0;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-
-.home-section-sub {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin: 0.35rem 0 0;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
 /* ── Ver todos link ── */
@@ -59,7 +24,8 @@
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   transition: color 0.2s;
 }
 
@@ -72,14 +38,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
   color: var(--muted);
-  font-size: 0.85rem;
-  max-width: 1440px;
-  margin: 0 auto;
+  font-size: 0.88rem;
 }
 
 .home-empty .svg-inline--fa {
-  font-size: 2rem;
-  opacity: 0.2;
+  font-size: 2.5rem;
+  opacity: 0.15;
 }

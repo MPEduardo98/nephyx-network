@@ -170,12 +170,10 @@ export default async function Home() {
     <div className="home-page">
 
       {/* ══════════════════════════════
-          1. HERO + STATS
+          1. HERO
       ══════════════════════════════ */}
       <section className="home-hero">
-
         <div className="home-hero-inner">
-
           <div className="home-hero-content">
             <div className="home-hero-badge">
               <FontAwesomeIcon icon={faCircle} className="home-live-dot" />
@@ -227,13 +225,11 @@ export default async function Home() {
               <span className="home-hero-stat-label">Premios entregados</span>
             </div>
           </div>
-
         </div>
-
       </section>
 
       {/* ══════════════════════════════
-          3. ¿QUÉ ES NEPHYX? (ABOUT)
+          2. ABOUT — ¿Qué es Nephyx?
       ══════════════════════════════ */}
       <section className="home-about">
         <div className="home-about-inner">
@@ -270,166 +266,236 @@ export default async function Home() {
       </section>
 
       {/* ══════════════════════════════
-          4. TORNEOS DESTACADOS
+          3. TORNEOS DESTACADOS
       ══════════════════════════════ */}
-      <section className="home-section">
-        <div className="home-section-header">
-          <div>
-            <p className="home-section-label">Competencias</p>
-            <h2 className="home-section-title">Torneos destacados</h2>
-            <p className="home-section-sub">Próximas competencias oficiales Nephyx</p>
-          </div>
-          <Link href="/torneos" className="home-see-all">
-            Ver todos <FontAwesomeIcon icon={faChevronRight} />
-          </Link>
-        </div>
+      <section className="home-torneos">
+        <div className="home-torneos-inner">
 
-        {torneos.length === 0 ? (
-          <div className="home-empty">
-            <FontAwesomeIcon icon={faTrophy} />
-            <p>No hay torneos disponibles por el momento.</p>
+          {/* Cabecera tipo hero: intro izquierda + link derecha */}
+          <div className="home-torneos-header">
+            <div className="home-torneos-intro">
+              <p className="home-section-label">Competencias</p>
+              <h2 className="home-torneos-title">
+                Torneos<br />
+                <span className="home-torneos-accent">destacados</span>
+              </h2>
+              <p className="home-torneos-sub">
+                Competencias oficiales con premios reales, reglas claras y árbitros.
+                Desde ligas abiertas hasta circuitos de élite.
+              </p>
+              <Link href="/torneos" className="btn btn-primary home-torneos-cta">
+                Ver todos los torneos <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '0.5rem' }} />
+              </Link>
+            </div>
+
+            {/* Stat destacada flotante */}
+            <div className="home-torneos-featured-stat">
+              <FontAwesomeIcon icon={faTrophy} className="home-torneos-stat-icon" />
+              <span className="home-torneos-stat-value">{stats.torneos}</span>
+              <span className="home-torneos-stat-label">Torneos realizados</span>
+            </div>
           </div>
-        ) : (
-          <div className="home-tournaments-grid">
-            {torneos.map((t) => (
-              <Link key={t.id} href={`/torneos/${t.slug}`} className="home-tournament-card">
-                <div className="home-tournament-banner">
-                  <TournamentBanner slug={t.slug} nombre={t.nombre} />
-                  <div className="home-tournament-banner-overlay" />
-                  <span className={`home-tournament-status home-status-${getStatusType(t.estado)}`}>
-                    <FontAwesomeIcon icon={faCircle} className="home-status-dot" />
-                    {getStatusLabel(t.estado)}
-                  </span>
-                </div>
-                <div className="home-tournament-body">
-                  <h3 className="home-tournament-name">{t.nombre}</h3>
-                  {t.informacion && (
-                    <p className="home-tournament-desc">{stripHtml(t.informacion)}</p>
-                  )}
-                  <div className="home-tournament-prizes">
-                    <div className="home-tournament-prize-chip">
-                      <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTrophy} /></div>
-                      <div className="home-prize-chip-content">
-                        <span className="home-prize-chip-label">Bolsa</span>
-                        <span className="home-prize-chip-value">{formatPrize(t.bolsa_premios)}</span>
-                      </div>
-                    </div>
-                    <div className="home-tournament-prize-chip">
-                      <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTicket} /></div>
-                      <div className="home-prize-chip-content">
-                        <span className="home-prize-chip-label">Entrada</span>
-                        <span className="home-prize-chip-value">{formatCosto(t.costo)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="home-tournament-footer">
-                    {t.liga_nombre && (
-                      <span className="home-tournament-meta-item">
-                        <FontAwesomeIcon icon={faLayerGroup} /> {t.liga_nombre}
-                      </span>
-                    )}
-                    <span className="home-tournament-meta-item">
-                      <FontAwesomeIcon icon={faCalendarAlt} /> {t.temporada}
+
+          {/* Grid de torneos */}
+          {torneos.length === 0 ? (
+            <div className="home-empty">
+              <FontAwesomeIcon icon={faTrophy} />
+              <p>No hay torneos disponibles por el momento.</p>
+            </div>
+          ) : (
+            <div className="home-tournaments-grid">
+              {torneos.map((t) => (
+                <Link key={t.id} href={`/torneos/${t.slug}`} className="home-tournament-card">
+                  <div className="home-tournament-banner">
+                    <TournamentBanner slug={t.slug} nombre={t.nombre} />
+                    <div className="home-tournament-banner-overlay" />
+                    <span className={`home-tournament-status home-status-${getStatusType(t.estado)}`}>
+                      <FontAwesomeIcon icon={faCircle} className="home-status-dot" />
+                      {getStatusLabel(t.estado)}
                     </span>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+                  <div className="home-tournament-body">
+                    <h3 className="home-tournament-name">{t.nombre}</h3>
+                    {t.informacion && (
+                      <p className="home-tournament-desc">{stripHtml(t.informacion)}</p>
+                    )}
+                    <div className="home-tournament-prizes">
+                      <div className="home-tournament-prize-chip">
+                        <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTrophy} /></div>
+                        <div className="home-prize-chip-content">
+                          <span className="home-prize-chip-label">Bolsa</span>
+                          <span className="home-prize-chip-value">{formatPrize(t.bolsa_premios)}</span>
+                        </div>
+                      </div>
+                      <div className="home-tournament-prize-chip">
+                        <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTicket} /></div>
+                        <div className="home-prize-chip-content">
+                          <span className="home-prize-chip-label">Entrada</span>
+                          <span className="home-prize-chip-value">{formatCosto(t.costo)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="home-tournament-footer">
+                      {t.liga_nombre && (
+                        <span className="home-tournament-meta-item">
+                          <FontAwesomeIcon icon={faLayerGroup} /> {t.liga_nombre}
+                        </span>
+                      )}
+                      <span className="home-tournament-meta-item">
+                        <FontAwesomeIcon icon={faCalendarAlt} /> {t.temporada}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
       {/* ══════════════════════════════
-          5. CÓMO FUNCIONA
+          4. CÓMO FUNCIONA
       ══════════════════════════════ */}
       <section className="home-howto">
         <div className="home-howto-inner">
-          <div className="home-howto-header">
+
+          {/* Intro centrada grande */}
+          <div className="home-howto-intro">
             <p className="home-section-label">Proceso</p>
-            <h2 className="home-section-title">Cómo funciona</h2>
-            <p className="home-section-sub">Tres pasos para entrar al circuito competitivo</p>
+            <h2 className="home-howto-title">
+              Tres pasos para entrar al<br />
+              <span className="home-howto-accent">circuito competitivo</span>
+            </h2>
+            <p className="home-howto-sub">
+              Sin burocracia. Sin complicaciones. Regístrate, forma equipo y compite.
+            </p>
           </div>
+
+          {/* Steps como panels horizontales */}
           <div className="home-steps-grid">
             {steps.map((step, i) => (
               <div key={step.num} className="home-step-card">
                 <div className="home-step-num">{step.num}</div>
-                <div className="home-step-icon">
-                  <FontAwesomeIcon icon={step.icon} />
+                <div className="home-step-body">
+                  <div className="home-step-icon">
+                    <FontAwesomeIcon icon={step.icon} />
+                  </div>
+                  <h3 className="home-step-title">{step.title}</h3>
+                  <p className="home-step-desc">{step.desc}</p>
                 </div>
-                <h3 className="home-step-title">{step.title}</h3>
-                <p className="home-step-desc">{step.desc}</p>
                 {i < steps.length - 1 && <div className="home-step-connector" />}
               </div>
             ))}
           </div>
+
+          <div className="home-howto-action">
+            <Link href="/auth/register" className="btn btn-primary home-howto-btn">
+              Empezar ahora <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '0.5rem' }} />
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ══════════════════════════════
-          6. RANKING
+          5. RANKING
       ══════════════════════════════ */}
-      <section className="home-section home-section-alt">
-        <div className="home-section-header">
-          <div>
+      <section className="home-ranking">
+        <div className="home-ranking-inner">
+
+          {/* Columna izquierda: intro + stats clave */}
+          <div className="home-ranking-intro">
             <p className="home-section-label">Clasificatoria 2026</p>
-            <h2 className="home-section-title">Ranking de equipos</h2>
-            <p className="home-section-sub">Top equipos por puntos y rendimiento</p>
+            <h2 className="home-ranking-title">
+              Ranking<br />
+              <span className="home-ranking-accent">de equipos</span>
+            </h2>
+            <p className="home-ranking-sub">
+              La tabla de posiciones actualizada en tiempo real. Cada victoria suma,
+              cada derrota enseña. ¿Dónde está tu equipo?
+            </p>
+
+            <div className="home-ranking-kpis">
+              <div className="home-ranking-kpi">
+                <span className="home-ranking-kpi-value">{stats.activas}</span>
+                <span className="home-ranking-kpi-label">Competencias activas</span>
+              </div>
+              <div className="home-ranking-kpi">
+                <span className="home-ranking-kpi-value">{stats.usuarios}</span>
+                <span className="home-ranking-kpi-label">Jugadores registrados</span>
+              </div>
+            </div>
+
+            <Link href="/clasificatoria" className="btn btn-secondary home-ranking-link">
+              Ver ranking completo <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: '0.4rem' }} />
+            </Link>
           </div>
-          <Link href="/clasificatoria" className="home-see-all">
-            Ver ranking completo <FontAwesomeIcon icon={faChevronRight} />
-          </Link>
+
+          {/* Tabla a la derecha */}
+          <div className="home-ranking-table-wrap">
+            <RankingTable ranking={ranking} />
+          </div>
+
         </div>
-        <RankingTable ranking={ranking} />
       </section>
 
       {/* ══════════════════════════════
-          7. ACADEMY
+          6. ACADEMY
       ══════════════════════════════ */}
-      <section className="home-section">
-        <div className="home-section-header">
-          <div>
-            <p className="home-section-label">Contenido</p>
-            <h2 className="home-section-title">Nephyx Academy</h2>
-            <p className="home-section-sub">Aprende, mejora y domina la Rift</p>
-          </div>
-          <Link href="/academy" className="home-see-all">
-            Ver todo <FontAwesomeIcon icon={faChevronRight} />
-          </Link>
-        </div>
+      <section className="home-academy">
+        <div className="home-academy-inner">
 
-        {academyPosts.length === 0 ? (
-          <div className="home-empty">
-            <FontAwesomeIcon icon={faBookOpen} />
-            <p>Próximamente contenido de Nephyx Academy.</p>
+          {/* Intro izquierda */}
+          <div className="home-academy-intro">
+            <p className="home-section-label">Contenido educativo</p>
+            <h2 className="home-academy-title">
+              Nephyx<br />
+              <span className="home-academy-accent">Academy</span>
+            </h2>
+            <p className="home-academy-sub">
+              Guías, análisis de meta y contenido educativo creado por jugadores
+              competitivos. Sube de nivel más rápido con conocimiento real.
+            </p>
+            <Link href="/academy" className="btn btn-secondary home-academy-link">
+              Ver todo el contenido <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: '0.4rem' }} />
+            </Link>
           </div>
-        ) : (
-          <div className="home-news-grid">
-            {academyPosts.map((post) => (
-              <article key={post.id} className="home-news-card">
-                <div className="home-news-top">
-                  <span className="home-news-tag">Academy</span>
-                  {post.published_at && (
-                    <span className="home-news-date">
-                      <FontAwesomeIcon icon={faClock} style={{ marginRight: '0.3rem', fontSize: '0.7rem' }} />
-                      {formatDate(post.published_at)}
-                    </span>
+
+          {/* Cards a la derecha */}
+          <div className="home-academy-cards">
+            {academyPosts.length === 0 ? (
+              <div className="home-empty">
+                <FontAwesomeIcon icon={faBookOpen} />
+                <p>Próximamente contenido de Nephyx Academy.</p>
+              </div>
+            ) : (
+              academyPosts.map((post) => (
+                <article key={post.id} className="home-news-card">
+                  <div className="home-news-top">
+                    <span className="home-news-tag">Academy</span>
+                    {post.published_at && (
+                      <span className="home-news-date">
+                        <FontAwesomeIcon icon={faClock} style={{ marginRight: '0.3rem', fontSize: '0.7rem' }} />
+                        {formatDate(post.published_at)}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="home-news-title">{post.title}</h3>
+                  {post.description && (
+                    <p className="home-news-excerpt">{post.description}</p>
                   )}
-                </div>
-                <h3 className="home-news-title">{post.title}</h3>
-                {post.description && (
-                  <p className="home-news-excerpt">{post.description}</p>
-                )}
-                <Link href={`/academy/${post.slug}`} className="home-news-link">
-                  Leer más <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: '0.65rem' }} />
-                </Link>
-              </article>
-            ))}
+                  <Link href={`/academy/${post.slug}`} className="home-news-link">
+                    Leer más <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: '0.65rem' }} />
+                  </Link>
+                </article>
+              ))
+            )}
           </div>
-        )}
+
+        </div>
       </section>
 
       {/* ══════════════════════════════
-          8. CTA FINAL
+          7. CTA FINAL
       ══════════════════════════════ */}
       <section className="home-cta">
         <div className="home-cta-inner">

@@ -1,59 +1,59 @@
 /* ════════════════════════════════════════
    ABOUT — ¿Qué es Nephyx?
-   Colores dinámicos según tema
 ════════════════════════════════════════ */
 
 .home-about {
-  background: var(--panel);
-  padding: 6rem 2rem;
+  position: relative;
+  width: 100%;
   min-height: 95dvh;
+  background: var(--panel);
+  padding: 7rem 2rem;
+  display: flex;
+  align-items: center;
 }
 
 .home-about-inner {
   max-width: 1440px;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  align-items: start;
+  gap: 6rem;
+  align-items: center;
 }
 
-/* ── Lead / texto izquierdo ── */
 .home-about-lead {
   position: sticky;
   top: 2rem;
 }
 
 .home-about-title {
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
   font-weight: 800;
   color: var(--txt);
   letter-spacing: -0.04em;
-  line-height: 1.1;
-  margin: 0.5rem 0 1.5rem;
+  line-height: 1.08;
+  margin: 0.5rem 0 1.75rem;
 }
 
-.home-about-accent {
-  color: var(--accent);
-}
+.home-about-accent { color: var(--accent); }
 
 .home-about-desc {
-  font-size: 0.92rem;
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.9;
   color: var(--muted);
-  margin: 0 0 2rem;
-  max-width: 440px;
+  margin: 0 0 2.5rem;
+  max-width: 480px;
 }
 
 .home-about-btn {
   width: auto !important;
-  padding: 0.7rem 1.5rem;
-  font-size: 0.88rem;
+  padding: 0.85rem 1.75rem;
+  font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
 }
 
-/* ── Features grid ── */
 .home-features-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -63,129 +63,186 @@
 
 .home-feature-card {
   background: var(--panel);
-  padding: 1.75rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.65rem;
+  transition: background 0.2s;
 }
 
+.home-feature-card:hover { background: var(--hover); }
+
 .home-feature-icon {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--accent);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .home-feature-title {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: var(--txt);
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-.home-feature-desc {
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.7;
-  margin: 0;
-}
-
-/* ════════════════════════════════════════
-   CÓMO FUNCIONA
-════════════════════════════════════════ */
-
-.home-howto {
-  background: var(--bg);
-  padding: 6rem 2rem;
-  border-top: 1px solid var(--borders);
-}
-
-.home-howto-inner {
-  max-width: 1440px;
-  margin: 0 auto;
-}
-
-.home-howto-header {
-  margin-bottom: 3.5rem;
-  max-width: 520px;
-}
-
-.home-howto-header .home-section-title {
-  font-size: 1.6rem;
-  margin: 0.4rem 0 0.5rem;
-  color: var(--txt);
-}
-
-.home-howto-header .home-section-sub {
-  color: var(--muted);
-}
-
-/* ── Steps ── */
-.home-steps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  position: relative;
-}
-
-.home-step-card {
-  padding: 2.5rem 2rem;
-  background: #131313;
-  border-radius: var(--radius);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.home-step-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-}
-
-.home-step-card + .home-step-card {
-  margin-left: 0;
-}
-
-/* Número grande en fondo */
-.home-step-num {
-  font-size: 4rem;
-  font-weight: 900;
-  color: var(--accent);
-  line-height: 1;
-  letter-spacing: -0.06em;
-  margin-bottom: 0.25rem;
-  user-select: none;
-}
-
-.home-step-icon {
-  font-size: 1.1rem;
-  color: #ffffff;
-}
-
-.home-step-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #ffffff;
   margin: 0;
   letter-spacing: -0.02em;
 }
 
-.home-step-desc {
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.75);
+.home-feature-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
   line-height: 1.75;
   margin: 0;
 }
 
-/* Línea conectora entre steps */
-.home-step-connector {
-  display: none;
+/* ════════════════════════════════════════
+   CÓMO FUNCIONA — intro centrada + panels
+════════════════════════════════════════ */
+
+.home-howto {
+  position: relative;
+  width: 100%;
+  min-height: 95dvh;
+  background: var(--bg);
+  padding: 7rem 2rem;
+  border-top: 1px solid var(--borders);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
 
+.home-howto-inner {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
 
+/* Intro centrada y grande */
+.home-howto-intro {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.home-howto-title {
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-weight: 800;
+  color: var(--txt);
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin: 0.4rem 0 1.25rem;
+}
+
+.home-howto-accent { color: var(--accent); }
+
+.home-howto-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* Steps como panels horizontales grandes */
+.home-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  position: relative;
+}
+
+.home-step-card {
+  position: relative;
+  padding: 3.5rem 2.5rem;
+  background: #0e0e0e;
+  border: 1px solid var(--borders);
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  transition: background 0.25s ease;
+}
+
+.home-step-card:last-child {
+  border-right: 1px solid var(--borders);
+}
+
+.home-step-card:hover {
+  background: #141414;
+}
+
+/* Línea accent top en hover */
+.home-step-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.home-step-card:hover::after {
+  transform: scaleX(1);
+}
+
+.home-step-num {
+  font-size: clamp(4rem, 6vw, 6rem);
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  margin-bottom: 1.5rem;
+  user-select: none;
+  opacity: 0.9;
+}
+
+.home-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.home-step-icon {
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 0.25rem;
+}
+
+.home-step-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.home-step-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.home-step-connector { display: none; }
+
+.home-howto-action {
+  display: flex;
+  justify-content: center;
+}
+
+.home-howto-btn {
+  width: auto !important;
+  height: 52px;
+  padding: 0 2rem;
+  font-size: 0.92rem;
+  display: inline-flex;
+  align-items: center;
+}
 
 /* ════════════════════════════════════════
    RESPONSIVE — About y Howto
@@ -194,42 +251,27 @@
 @media (max-width: 1024px) {
   .home-about-inner {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 4rem;
   }
 
-  .home-about-lead {
-    position: static;
+  .home-about-lead { position: static; }
+  .home-about-desc { max-width: 100%; }
+
+  .home-steps-grid { grid-template-columns: 1fr; gap: 1px; }
+
+  .home-step-card {
+    border-right: 1px solid var(--borders);
+    border-bottom: none;
   }
 
-  .home-about-desc {
-    max-width: 100%;
-  }
+  .home-step-card:last-child { border-bottom: 1px solid var(--borders); }
 }
 
 @media (max-width: 768px) {
-  .home-about         { padding: 4rem 1.25rem; }
-  .home-howto         { padding: 4rem 1.25rem; }
+  .home-about { padding: 5rem 1.25rem; min-height: unset; }
+  .home-howto { padding: 5rem 1.25rem; min-height: unset; }
 
-  .home-features-grid {
-    grid-template-columns: 1fr;
-  }
+  .home-features-grid { grid-template-columns: 1fr; }
 
-  .home-steps-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .home-step-card + .home-step-card {
-    margin-left: 0;
-    margin-top: 0;
-  }
-
-  .home-howto-action {
-    justify-content: stretch;
-  }
-
-  .home-howto-btn {
-    width: 100% !important;
-    justify-content: center;
-  }
+  .home-howto-btn { width: 100% !important; justify-content: center; }
 }
