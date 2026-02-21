@@ -6,4 +6,4 @@
 @import '../global/styles/footer.css';
 @import '../global/styles/not-found.css';
 @import './auth/styles/auth.css';
-@import './(main)/home/styles/index.css';
+@import './(main)/styles/index.css';
