@@ -362,11 +362,6 @@ export default async function Home() {
               </div>
             ))}
           </div>
-          <div className="home-howto-action">
-            <Link href="/auth/register" className="btn btn-primary home-howto-btn">
-              Empezar ahora <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '0.5rem' }} />
-            </Link>
-          </div>
         </div>
       </section>
 
