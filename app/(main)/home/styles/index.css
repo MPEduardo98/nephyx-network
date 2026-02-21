@@ -1,11 +1,10 @@
 /* ════════════════════════════════════════
    HOME — Punto de entrada
-   Importa todos los archivos de sección
 ════════════════════════════════════════ */
 
 @import './hero.css';
-@import './stats.css';
 @import './sections.css';
+@import './about.css';
 @import './tournaments.css';
 @import './ranking.css';
 @import './news.css';

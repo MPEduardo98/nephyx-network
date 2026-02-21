@@ -8,27 +8,39 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .home-stats {
+  .home-stats,
+  .home-stats-strip {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .home-ranking-cols,
+  .home-ranking-row {
+    grid-template-columns: 44px 1fr 52px 52px 52px 68px 60px 80px;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .home-hero    { padding: 3rem 1.25rem 2.5rem; }
-  .home-section { padding: 2rem 1.25rem; }
-  .home-cta     { padding: 3rem 1.25rem; }
+  .home-section { padding: 3.5rem 1.25rem; }
+  .home-cta     { padding: 3.5rem 1.25rem; }
 
-  .home-stats {
+  .home-stats,
+  .home-stats-strip {
     grid-template-columns: repeat(2, 1fr);
     padding: 0 1.25rem;
   }
 
-  .home-stat-card:nth-child(odd) {
+  .home-stat-card + .home-stat-card:nth-child(odd),
+  .home-stat-item + .home-stat-item:nth-child(odd) {
     border-left: none;
   }
 
   .home-stat-card:nth-child(3),
-  .home-stat-card:nth-child(4) {
+  .home-stat-card:nth-child(4),
+  .home-stat-item:nth-child(3),
+  .home-stat-item:nth-child(4) {
     border-top: 1px solid var(--borders);
   }
 
@@ -37,9 +49,20 @@
     grid-template-columns: 1fr;
   }
 
-  .home-ranking-header,
+  .home-ranking-cols,
   .home-ranking-row {
-    grid-template-columns: 36px 1fr 56px;
+    grid-template-columns: 40px 1fr 48px 48px 56px;
+    font-size: 0.7rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Ocultar WR%, Tendencia en mobile */
+  .home-ranking-cols > span:nth-child(6),
+  .home-ranking-row  > span:nth-child(6),
+  .home-ranking-cols > span:nth-child(8),
+  .home-ranking-row  > span:nth-child(8) {
+    display: none;
   }
 
   .home-section-header {

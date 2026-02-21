@@ -3,10 +3,9 @@
 ════════════════════════════════════════ */
 
 .home-cta {
-  padding: 6rem 2rem !important;
-  text-align: center !important;
-  background: #000000 !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 6rem 2rem;
+  text-align: center;
+  background: #000000;
 }
 
 .home-cta-inner {
@@ -18,22 +17,26 @@
   gap: 1rem;
 }
 
-.home-cta-icon {
-  font-size: 2rem;
-  color: var(--accent) !important;
+.home-cta-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 .home-cta-title {
   font-size: 2.4rem;
   font-weight: 800;
-  color: #ffffff !important;
+  color: #ffffff;
   letter-spacing: -0.04em;
   margin: 0;
+  line-height: 1.1;
 }
 
 .home-cta-sub {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.7;
   margin: 0;
 }
@@ -43,13 +46,13 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .home-cta-btn {
   width: auto !important;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
+  padding: 0.75rem 1.75rem;
+  font-size: 0.88rem;
   display: inline-flex;
   align-items: center;
 }

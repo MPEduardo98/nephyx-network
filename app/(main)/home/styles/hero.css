@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════
-   HOME PAGE — Base
+   HOME PAGE
 ════════════════════════════════════════ */
 
 .home-page {
@@ -9,14 +9,17 @@
 }
 
 /* ════════════════════════════════════════
-   HERO
+   HERO — 100dvh
 ════════════════════════════════════════ */
 
 .home-hero {
   position: relative;
-  padding: 9rem 2rem 7rem;
-  overflow: hidden;
+  height: 100dvh;
+  min-height: 640px;
   width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .home-hero::before {
@@ -28,11 +31,27 @@
   z-index: 0;
 }
 
+/* Fila: texto izquierda | stats derecha */
 .home-hero-inner {
   position: relative;
   z-index: 1;
+  width: 100%;
   max-width: 1440px;
   margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+}
+
+/* ── Texto izquierda ── */
+.home-hero-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  flex-shrink: 0;
 }
 
 .home-hero-badge {
@@ -73,7 +92,6 @@
   line-height: 1.75;
   color: rgba(255, 255, 255, 0.65);
   margin: 0 0 2.25rem;
-  max-width: 500px;
 }
 
 .home-hero-actions {
@@ -117,3 +135,68 @@
 }
 
 .home-social-pill:hover { color: #fff; }
+
+/* ── Stats derecha ── */
+.home-hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.home-hero-stat {
+  background: rgba(0, 0, 0, 0.45);
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.home-hero-stat-icon {
+  font-size: 0.78rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.home-hero-stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.home-hero-stat-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .home-hero-inner {
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-hero-inner {
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 1.25rem 2rem;
+    gap: 2.5rem;
+  }
+
+  .home-hero-content {
+    max-width: 100%;
+  }
+
+  .home-hero-stats {
+    width: 100%;
+  }
+}
