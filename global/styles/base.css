@@ -34,12 +34,6 @@
   --btn-secondary: #f9f9f9;
 }
 
-/* Estilos base */
-html,
-body {
-  height: 100%;
-}
-
 body {
   background: var(--bg);
   color: var(--txt);

@@ -181,12 +181,16 @@ export default function Sidebar() {
         <div className="sb-footer">
 
           {/* Toggle de tema */}
-          <div className="sb-footer-row">
+          <div className="sb-footer-row" onClick={toggleTheme}>
             <span className="sb-icon">
               <FontAwesomeIcon icon={faSun} />
             </span>
             <span className="sb-label">Modo claro</span>
-            <label className="sb-toggle" aria-label="Cambiar tema">
+            <label
+              className="sb-toggle"
+              aria-label="Cambiar tema"
+              onClick={(e) => e.stopPropagation()}
+            >
               <input
                 type="checkbox"
                 className="sb-toggle-input"

@@ -15,7 +15,7 @@ interface SidebarContextType {
 const SidebarContext = createContext<SidebarContextType | null>(null);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed]   = useState(false);
+  const [collapsed, setCollapsed]   = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile]     = useState(false);
 
