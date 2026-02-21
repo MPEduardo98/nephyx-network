@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════
    ACADEMY — Layout split tipo hero
-   Intro izquierda | Cards apiladas derecha
+   Interfaz normal → usa --panel, --txt, etc.
 ════════════════════════════════════════ */
 
 .home-academy {
@@ -30,7 +30,6 @@
   top: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .home-academy-title {
@@ -60,14 +59,13 @@
   align-self: flex-start;
 }
 
-/* ── Cards apiladas a la derecha ── */
+/* ── Cards apiladas ── */
 .home-academy-cards {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Cards individuales */
 .home-news-card {
   background: var(--bg);
   padding: 2rem 2.25rem;
@@ -80,7 +78,7 @@
 
 .home-news-card:hover {
   transform: translateX(4px);
-  box-shadow: -4px 0 0 var(--accent), 0 8px 32px rgba(0,0,0,0.15);
+  box-shadow: -4px 0 0 var(--accent), var(--shadow-md);
 }
 
 /* Línea accent izquierda */
@@ -92,7 +90,7 @@
   bottom: 0;
   width: 3px;
   background: var(--accent);
-  opacity: 0.4;
+  opacity: 0.35;
   transition: opacity 0.2s;
 }
 
@@ -156,14 +154,11 @@
 /* ════════════════════════════════════════
    RESPONSIVE
 ════════════════════════════════════════ */
-@media (max-width: 1024px) {
-  .home-academy-inner {
-    grid-template-columns: 1fr;
-    gap: 3.5rem;
-  }
 
+@media (max-width: 1024px) {
+  .home-academy-inner { grid-template-columns: 1fr; gap: 3.5rem; }
   .home-academy-intro { position: static; }
-  .home-academy-link { align-self: auto; }
+  .home-academy-link  { align-self: auto; }
 }
 
 @media (max-width: 768px) {

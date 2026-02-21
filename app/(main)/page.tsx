@@ -9,8 +9,9 @@ import {
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { getDb } from '@/global/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
-import TournamentBanner from '@/app/(main)/home/components/TournamentBanner';
-import RankingTable, { type RankingRow } from '@/app/(main)/home/components/RankingTable';
+import TournamentBanner from '@/app/(main)/components/TournamentBanner';
+import RankingTable, { type RankingRow } from '@/app/(main)/components/RankingTable';
+import Reveal from '@/app/(main)/components/Reveal';
 import {
   getTorneosDestacados,
   formatPrize,
@@ -170,11 +171,13 @@ export default async function Home() {
     <div className="home-page">
 
       {/* ══════════════════════════════
-          1. HERO
+          1. HERO — sin animación de scroll,
+             entra con CSS al cargar la página
       ══════════════════════════════ */}
       <section className="home-hero">
         <div className="home-hero-inner">
-          <div className="home-hero-content">
+
+          <div className="home-hero-content home-hero-content--animate">
             <div className="home-hero-badge">
               <FontAwesomeIcon icon={faCircle} className="home-live-dot" />
               Season 2026 · League of Legends
@@ -203,7 +206,7 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="home-hero-stats">
+          <div className="home-hero-stats home-hero-stats--animate">
             <div className="home-hero-stat">
               <FontAwesomeIcon icon={faUsers} className="home-hero-stat-icon" />
               <span className="home-hero-stat-value">{stats.usuarios}</span>
@@ -225,15 +228,18 @@ export default async function Home() {
               <span className="home-hero-stat-label">Premios entregados</span>
             </div>
           </div>
+
         </div>
       </section>
 
       {/* ══════════════════════════════
-          2. ABOUT — ¿Qué es Nephyx?
+          2. ABOUT
       ══════════════════════════════ */}
       <section className="home-about">
         <div className="home-about-inner">
-          <div className="home-about-lead">
+
+          {/* Texto izquierda — entra desde la izquierda */}
+          <Reveal variant="fade-right" duration={800} as="div" className="home-about-lead">
             <p className="home-section-label">¿Qué es Nephyx?</p>
             <h2 className="home-about-title">
               La infraestructura del{' '}
@@ -249,30 +255,32 @@ export default async function Home() {
             <Link href="/nosotros" className="btn btn-secondary home-about-btn">
               Conocer más
             </Link>
-          </div>
+          </Reveal>
 
-          <div className="home-features-grid">
-            {features.map((f) => (
-              <div key={f.title} className="home-feature-card">
+          {/* Features grid — entra desde la derecha, cards con stagger */}
+          <Reveal variant="fade-left" duration={800} delay={100} as="div" className="home-features-grid">
+            {features.map((f, i) => (
+              <Reveal key={f.title} variant="fade-up" delay={i * 60} duration={600} as="div" className="home-feature-card">
                 <div className="home-feature-icon">
                   <FontAwesomeIcon icon={f.icon} />
                 </div>
                 <h3 className="home-feature-title">{f.title}</h3>
                 <p className="home-feature-desc">{f.desc}</p>
-              </div>
+              </Reveal>
             ))}
-          </div>
+          </Reveal>
+
         </div>
       </section>
 
       {/* ══════════════════════════════
-          3. TORNEOS DESTACADOS
+          3. TORNEOS
       ══════════════════════════════ */}
       <section className="home-torneos">
         <div className="home-torneos-inner">
 
-          {/* Cabecera tipo hero: intro izquierda + link derecha */}
-          <div className="home-torneos-header">
+          {/* Header — intro izq + stat der */}
+          <Reveal variant="fade-up" duration={750} as="div" className="home-torneos-header">
             <div className="home-torneos-intro">
               <p className="home-section-label">Competencias</p>
               <h2 className="home-torneos-title">
@@ -288,15 +296,14 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* Stat destacada flotante */}
-            <div className="home-torneos-featured-stat">
+            <Reveal variant="scale-up" delay={200} duration={700} as="div" className="home-torneos-featured-stat">
               <FontAwesomeIcon icon={faTrophy} className="home-torneos-stat-icon" />
               <span className="home-torneos-stat-value">{stats.torneos}</span>
               <span className="home-torneos-stat-label">Torneos realizados</span>
-            </div>
-          </div>
+            </Reveal>
+          </Reveal>
 
-          {/* Grid de torneos */}
+          {/* Grid de torneos — cards con stagger */}
           {torneos.length === 0 ? (
             <div className="home-empty">
               <FontAwesomeIcon icon={faTrophy} />
@@ -304,49 +311,51 @@ export default async function Home() {
             </div>
           ) : (
             <div className="home-tournaments-grid">
-              {torneos.map((t) => (
-                <Link key={t.id} href={`/torneos/${t.slug}`} className="home-tournament-card">
-                  <div className="home-tournament-banner">
-                    <TournamentBanner slug={t.slug} nombre={t.nombre} />
-                    <div className="home-tournament-banner-overlay" />
-                    <span className={`home-tournament-status home-status-${getStatusType(t.estado)}`}>
-                      <FontAwesomeIcon icon={faCircle} className="home-status-dot" />
-                      {getStatusLabel(t.estado)}
-                    </span>
-                  </div>
-                  <div className="home-tournament-body">
-                    <h3 className="home-tournament-name">{t.nombre}</h3>
-                    {t.informacion && (
-                      <p className="home-tournament-desc">{stripHtml(t.informacion)}</p>
-                    )}
-                    <div className="home-tournament-prizes">
-                      <div className="home-tournament-prize-chip">
-                        <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTrophy} /></div>
-                        <div className="home-prize-chip-content">
-                          <span className="home-prize-chip-label">Bolsa</span>
-                          <span className="home-prize-chip-value">{formatPrize(t.bolsa_premios)}</span>
-                        </div>
-                      </div>
-                      <div className="home-tournament-prize-chip">
-                        <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTicket} /></div>
-                        <div className="home-prize-chip-content">
-                          <span className="home-prize-chip-label">Entrada</span>
-                          <span className="home-prize-chip-value">{formatCosto(t.costo)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="home-tournament-footer">
-                      {t.liga_nombre && (
-                        <span className="home-tournament-meta-item">
-                          <FontAwesomeIcon icon={faLayerGroup} /> {t.liga_nombre}
-                        </span>
-                      )}
-                      <span className="home-tournament-meta-item">
-                        <FontAwesomeIcon icon={faCalendarAlt} /> {t.temporada}
+              {torneos.map((t, i) => (
+                <Reveal key={t.id} variant="fade-up" delay={i * 80} duration={650} as="div">
+                  <Link href={`/torneos/${t.slug}`} className="home-tournament-card">
+                    <div className="home-tournament-banner">
+                      <TournamentBanner slug={t.slug} nombre={t.nombre} />
+                      <div className="home-tournament-banner-overlay" />
+                      <span className={`home-tournament-status home-status-${getStatusType(t.estado)}`}>
+                        <FontAwesomeIcon icon={faCircle} className="home-status-dot" />
+                        {getStatusLabel(t.estado)}
                       </span>
                     </div>
-                  </div>
-                </Link>
+                    <div className="home-tournament-body">
+                      <h3 className="home-tournament-name">{t.nombre}</h3>
+                      {t.informacion && (
+                        <p className="home-tournament-desc">{stripHtml(t.informacion)}</p>
+                      )}
+                      <div className="home-tournament-prizes">
+                        <div className="home-tournament-prize-chip">
+                          <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTrophy} /></div>
+                          <div className="home-prize-chip-content">
+                            <span className="home-prize-chip-label">Bolsa</span>
+                            <span className="home-prize-chip-value">{formatPrize(t.bolsa_premios)}</span>
+                          </div>
+                        </div>
+                        <div className="home-tournament-prize-chip">
+                          <div className="home-prize-chip-icon"><FontAwesomeIcon icon={faTicket} /></div>
+                          <div className="home-prize-chip-content">
+                            <span className="home-prize-chip-label">Entrada</span>
+                            <span className="home-prize-chip-value">{formatCosto(t.costo)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="home-tournament-footer">
+                        {t.liga_nombre && (
+                          <span className="home-tournament-meta-item">
+                            <FontAwesomeIcon icon={faLayerGroup} /> {t.liga_nombre}
+                          </span>
+                        )}
+                        <span className="home-tournament-meta-item">
+                          <FontAwesomeIcon icon={faCalendarAlt} /> {t.temporada}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </Reveal>
               ))}
             </div>
           )}
@@ -359,8 +368,8 @@ export default async function Home() {
       <section className="home-howto">
         <div className="home-howto-inner">
 
-          {/* Intro centrada grande */}
-          <div className="home-howto-intro">
+          {/* Intro centrada */}
+          <Reveal variant="fade-up" duration={750} as="div" className="home-howto-intro">
             <p className="home-section-label">Proceso</p>
             <h2 className="home-howto-title">
               Tres pasos para entrar al<br />
@@ -369,12 +378,12 @@ export default async function Home() {
             <p className="home-howto-sub">
               Sin burocracia. Sin complicaciones. Regístrate, forma equipo y compite.
             </p>
-          </div>
+          </Reveal>
 
-          {/* Steps como panels horizontales */}
+          {/* Steps — cada panel entra con stagger */}
           <div className="home-steps-grid">
             {steps.map((step, i) => (
-              <div key={step.num} className="home-step-card">
+              <Reveal key={step.num} variant="fade-up" delay={i * 120} duration={700} as="div" className="home-step-card">
                 <div className="home-step-num">{step.num}</div>
                 <div className="home-step-body">
                   <div className="home-step-icon">
@@ -383,16 +392,16 @@ export default async function Home() {
                   <h3 className="home-step-title">{step.title}</h3>
                   <p className="home-step-desc">{step.desc}</p>
                 </div>
-                {i < steps.length - 1 && <div className="home-step-connector" />}
-              </div>
+              </Reveal>
             ))}
           </div>
 
-          <div className="home-howto-action">
+          <Reveal variant="fade-up" delay={400} duration={600} as="div" className="home-howto-action">
             <Link href="/auth/register" className="btn btn-primary home-howto-btn">
               Empezar ahora <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '0.5rem' }} />
             </Link>
-          </div>
+          </Reveal>
+
         </div>
       </section>
 
@@ -402,8 +411,8 @@ export default async function Home() {
       <section className="home-ranking">
         <div className="home-ranking-inner">
 
-          {/* Columna izquierda: intro + stats clave */}
-          <div className="home-ranking-intro">
+          {/* Intro — entra desde la izquierda */}
+          <Reveal variant="fade-right" duration={800} as="div" className="home-ranking-intro">
             <p className="home-section-label">Clasificatoria 2026</p>
             <h2 className="home-ranking-title">
               Ranking<br />
@@ -415,25 +424,25 @@ export default async function Home() {
             </p>
 
             <div className="home-ranking-kpis">
-              <div className="home-ranking-kpi">
+              <Reveal variant="scale-up" delay={200} duration={600} as="div" className="home-ranking-kpi">
                 <span className="home-ranking-kpi-value">{stats.activas}</span>
                 <span className="home-ranking-kpi-label">Competencias activas</span>
-              </div>
-              <div className="home-ranking-kpi">
+              </Reveal>
+              <Reveal variant="scale-up" delay={300} duration={600} as="div" className="home-ranking-kpi">
                 <span className="home-ranking-kpi-value">{stats.usuarios}</span>
                 <span className="home-ranking-kpi-label">Jugadores registrados</span>
-              </div>
+              </Reveal>
             </div>
 
             <Link href="/clasificatoria" className="btn btn-secondary home-ranking-link">
               Ver ranking completo <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: '0.4rem' }} />
             </Link>
-          </div>
+          </Reveal>
 
-          {/* Tabla a la derecha */}
-          <div className="home-ranking-table-wrap">
+          {/* Tabla — entra desde la derecha */}
+          <Reveal variant="fade-left" delay={150} duration={800} as="div" className="home-ranking-table-wrap">
             <RankingTable ranking={ranking} />
-          </div>
+          </Reveal>
 
         </div>
       </section>
@@ -445,7 +454,7 @@ export default async function Home() {
         <div className="home-academy-inner">
 
           {/* Intro izquierda */}
-          <div className="home-academy-intro">
+          <Reveal variant="fade-right" duration={800} as="div" className="home-academy-intro">
             <p className="home-section-label">Contenido educativo</p>
             <h2 className="home-academy-title">
               Nephyx<br />
@@ -458,18 +467,18 @@ export default async function Home() {
             <Link href="/academy" className="btn btn-secondary home-academy-link">
               Ver todo el contenido <FontAwesomeIcon icon={faChevronRight} style={{ marginLeft: '0.4rem' }} />
             </Link>
-          </div>
+          </Reveal>
 
-          {/* Cards a la derecha */}
+          {/* Cards apiladas — stagger de arriba a abajo */}
           <div className="home-academy-cards">
             {academyPosts.length === 0 ? (
-              <div className="home-empty">
+              <Reveal variant="fade-up" as="div" className="home-empty">
                 <FontAwesomeIcon icon={faBookOpen} />
                 <p>Próximamente contenido de Nephyx Academy.</p>
-              </div>
+              </Reveal>
             ) : (
-              academyPosts.map((post) => (
-                <article key={post.id} className="home-news-card">
+              academyPosts.map((post, i) => (
+                <Reveal key={post.id} variant="fade-up" delay={i * 100} duration={650} as="article" className="home-news-card">
                   <div className="home-news-top">
                     <span className="home-news-tag">Academy</span>
                     {post.published_at && (
@@ -486,7 +495,7 @@ export default async function Home() {
                   <Link href={`/academy/${post.slug}`} className="home-news-link">
                     Leer más <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: '0.65rem' }} />
                   </Link>
-                </article>
+                </Reveal>
               ))
             )}
           </div>
@@ -498,22 +507,22 @@ export default async function Home() {
           7. CTA FINAL
       ══════════════════════════════ */}
       <section className="home-cta">
-        <div className="home-cta-inner">
+        <Reveal variant="fade-up" duration={750} as="div" className="home-cta-inner">
           <p className="home-cta-label">Únete ahora</p>
           <h2 className="home-cta-title">¿Listo para competir?</h2>
           <p className="home-cta-sub">
             Únete a miles de jugadores en la plataforma de League of Legends
             competitivo más organizada de la región.
           </p>
-          <div className="home-cta-actions">
+          <Reveal variant="scale-up" delay={200} duration={600} as="div" className="home-cta-actions">
             <Link href="/auth/register" className="btn btn-primary home-cta-btn">
               Crear cuenta gratis <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '0.5rem' }} />
             </Link>
             <Link href="/torneos" className="btn btn-secondary home-cta-btn">
               Explorar torneos
             </Link>
-          </div>
-        </div>
+          </Reveal>
+        </Reveal>
       </section>
 
     </div>

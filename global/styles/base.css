@@ -1,59 +1,135 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css');
 
-/* Variables de tema */
+/* ════════════════════════════════════════
+   VARIABLES DE TEMA
+   Cada variable tiene su contraparte lógica
+   en ambos temas — sin hardcodear colores.
+
+   CAPAS DE FONDO (de más claro a más oscuro en light, al revés en dark):
+     --bg        → fondo principal de página
+     --panel     → tarjetas, sidebar, contenedores
+     --panel-2   → interior de panel (inputs, chips, sub-fondos)
+     --panel-3   → no usado actualmente, reservado
+
+   ZONA OSCURA (hero, steps, CTA, secciones con fondo propio):
+     --dark-bg   → fondo de secciones siempre oscuras
+     --dark-panel → panel dentro de zona oscura
+     --dark-txt   → texto sobre zona oscura
+     --dark-muted → texto secundario sobre zona oscura
+
+   TIPOGRAFÍA:
+     --txt       → texto principal
+     --txt-inv   → texto invertido (sobre botón primario, etc.)
+     --muted     → texto secundario / labels
+
+   INTERACCIÓN:
+     --borders   → bordes sutiles
+     --hover     → fondo de hover en items
+     --accent    → color de marca (rojo)
+
+   BOTONES:
+     --btn-primary      → fondo btn primario
+     --btn-primary-txt  → texto sobre btn primario
+     --btn-secondary    → fondo btn secundario
+     --btn-secondary-txt → texto sobre btn secundario
+════════════════════════════════════════ */
+
 :root[data-theme="light"] {
-  --bg: #f9f9f9;
-  --panel: #ffffff;
-  --panel-2: #f9f9f9;
-  --panel-3: #000000;
-  --txt: #363636;
-  --txt-2: #ffffff;
-  --muted: #ADADAD;
-  --accent: #e80028;
-  --borders: rgba(0, 0, 0, 0.1);
-  --hover: rgba(0, 0, 0, 0.07);
-  --radius: 8px;
-  --btn-primary: #e80028;
-  --btn-secondary: #131313;
+  /* Fondos de página */
+  --bg:       #f4f4f4;
+  --panel:    #ffffff;
+  --panel-2:  #ebebeb;
+  --panel-3:  #d8d8d8;
+
+  /* Zona oscura — igual en ambos temas (siempre oscura) */
+  --dark-bg:    #060606;
+  --dark-panel: #111111;
+  --dark-panel-2: #1a1a1a;
+  --dark-txt:   #ffffff;
+  --dark-muted: rgba(255, 255, 255, 0.5);
+  --dark-borders: rgba(255, 255, 255, 0.08);
+
+  /* Tipografía */
+  --txt:      #1a1a1a;
+  --txt-inv:  #ffffff;
+  --muted:    #888888;
+
+  /* Interacción */
+  --accent:   #e80028;
+  --borders:  rgba(0, 0, 0, 0.09);
+  --hover:    rgba(0, 0, 0, 0.05);
+  --radius:   8px;
+
+  /* Botones */
+  --btn-primary:      #e80028;
+  --btn-primary-txt:  #ffffff;
+  --btn-secondary:    #1a1a1a;
+  --btn-secondary-txt: #ffffff;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.13);
 }
 
 :root[data-theme="dark"] {
-  --bg: #050505;
-  --panel: #131313;
-  --panel-2: #0f0f10;
-  --panel-3: #f9f9f9;
-  --txt: #ffffff;
-  --txt-2: #000000;
-  --muted: #ADADAD;
-  --accent: #e80028;
-  --borders: rgba(255, 255, 255, 0.05);
-  --hover: rgba(255, 255, 255, 0.07);
-  --radius: 8px;
-  --btn-primary: #e80028;
-  --btn-secondary: #f9f9f9;
+  /* Fondos de página */
+  --bg:       #050505;
+  --panel:    #111111;
+  --panel-2:  #0d0d0d;
+  --panel-3:  #1a1a1a;
+
+  /* Zona oscura — igual en ambos temas (siempre oscura) */
+  --dark-bg:    #060606;
+  --dark-panel: #111111;
+  --dark-panel-2: #1a1a1a;
+  --dark-txt:   #ffffff;
+  --dark-muted: rgba(255, 255, 255, 0.5);
+  --dark-borders: rgba(255, 255, 255, 0.08);
+
+  /* Tipografía */
+  --txt:      #ffffff;
+  --txt-inv:  #000000;
+  --muted:    #888888;
+
+  /* Interacción */
+  --accent:   #e80028;
+  --borders:  rgba(255, 255, 255, 0.06);
+  --hover:    rgba(255, 255, 255, 0.05);
+  --radius:   8px;
+
+  /* Botones */
+  --btn-primary:      #e80028;
+  --btn-primary-txt:  #ffffff;
+  --btn-secondary:    #ffffff;
+  --btn-secondary-txt: #000000;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.50);
 }
+
+/* ════════════════════════════════════════
+   BASE
+════════════════════════════════════════ */
 
 body {
   background: var(--bg);
   color: var(--txt);
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   margin: 0;
-  /* NO scrollbar-width: none aquí — bloqueaba scroll en móvil */
 }
 
 a {
   text-decoration: none;
 }
 
-/* Ocultar scrollbar solo en desktop, no en móvil */
+/* Ocultar scrollbar solo en desktop */
 @media (min-width: 769px) {
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  html,
-  body {
+  ::-webkit-scrollbar { display: none; }
+  html, body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
@@ -72,8 +148,8 @@ a {
   animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
 }
 
-/* Selección de texto estilo terminal */
+/* Selección de texto */
 ::selection {
-  background: rgba(6, 182, 212, 0.3);
-  color: #22d3ee;
+  background: rgba(232, 0, 40, 0.25);
+  color: var(--accent);
 }

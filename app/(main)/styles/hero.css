@@ -9,7 +9,8 @@
 }
 
 /* ════════════════════════════════════════
-   HERO — 100dvh
+   HERO — 95dvh
+   Zona oscura → usa --dark-* variables
 ════════════════════════════════════════ */
 
 .home-hero {
@@ -80,7 +81,7 @@
   font-size: clamp(2.2rem, 4.5vw, 3.6rem);
   font-weight: 800;
   line-height: 1.1;
-  color: #ffffff;
+  color: var(--dark-txt);
   letter-spacing: -0.04em;
   margin: 0 0 1.25rem;
 }
@@ -90,7 +91,7 @@
 .home-hero-sub {
   font-size: 1rem;
   line-height: 1.75;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--dark-muted);
   margin: 0 0 2.25rem;
 }
 
@@ -122,7 +123,7 @@
   gap: 0.4rem;
   font-size: 0.78rem;
   font-weight: 500;
-  color: rgba(255,255,255,0.5);
+  color: var(--dark-muted);
   text-decoration: none;
   padding: 0.3rem 0;
   transition: color 0.2s;
@@ -131,22 +132,22 @@
 .home-social-pill + .home-social-pill::before {
   content: '·';
   margin-right: 0.5rem;
-  color: rgba(255,255,255,0.2);
+  color: var(--dark-borders);
 }
 
-.home-social-pill:hover { color: #fff; }
+.home-social-pill:hover { color: var(--dark-txt); }
 
 /* ── Stats derecha ── */
 .home-hero-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--dark-borders);
   flex-shrink: 0;
 }
 
 .home-hero-stat {
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--dark-panel);
   padding: 2rem 1.75rem;
   display: flex;
   flex-direction: column;
@@ -162,16 +163,59 @@
 .home-hero-stat-value {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--dark-txt);
   letter-spacing: -0.05em;
   line-height: 1;
 }
 
 .home-hero-stat-label {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--dark-muted);
   font-weight: 500;
   letter-spacing: 0.01em;
+}
+
+/* ════════════════════════════════════════
+   HERO ENTRADA — CSS puro al cargar página
+   El hero no usa scroll, entra directo
+════════════════════════════════════════ */
+
+@keyframes heroContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroStatsIn {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.home-hero-content--animate {
+  animation: heroContentIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s both;
+}
+
+.home-hero-stats--animate {
+  animation: heroStatsIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s both;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-content--animate,
+  .home-hero-stats--animate {
+    animation: none;
+  }
 }
 
 /* ════════════════════════════════════════

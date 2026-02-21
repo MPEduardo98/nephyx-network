@@ -1,12 +1,12 @@
 /* ════════════════════════════════════════
-   STATS — Franja #131313
-   Vive al fondo del hero
+   STATS — Franja zona oscura
+   Zona oscura → usa --dark-* variables
 ════════════════════════════════════════ */
 
 .home-stats,
 .home-stats-strip,
 .home-stats-below {
-  background: #131313;
+  background: var(--dark-panel);
   width: 100%;
   flex-shrink: 0;
 }
@@ -18,13 +18,14 @@
   padding: 0 2rem;
 }
 
+/* ── Stat card ── */
 .home-stat-card,
 .home-stat-item {
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  background: #131313;
+  background: var(--dark-panel);
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 0.5s ease, transform 0.5s ease;
@@ -47,7 +48,7 @@
 
 .home-stat-card + .home-stat-card,
 .home-stat-item + .home-stat-item {
-  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 1px solid var(--dark-borders);
 }
 
 .home-stat-icon {
@@ -59,14 +60,14 @@
 .home-stat-value {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--dark-txt);
   letter-spacing: -0.05em;
   line-height: 1;
 }
 
 .home-stat-label {
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--dark-muted);
   font-weight: 500;
   letter-spacing: 0.01em;
 }
