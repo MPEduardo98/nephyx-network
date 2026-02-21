@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import '@/lib/fontawesome';
+import '@/global/lib/fontawesome';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { AlertProvider } from '@/components/alerts/AlertProvider';
-import Providers from '@/components/Providers';
+import { AlertProvider } from '@/global/components/alerts/AlertProvider';
+import Providers from '@/global/components/Providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

@@ -2,8 +2,8 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import type { RowDataPacket } from 'mysql2';
-import { getDb } from '@/lib/mysql';
-import { authConfig } from '@/auth.config';
+import { getDb } from '@/global/lib/mysql';
+import { authConfig } from '@/app/auth/libs/auth.config';
 
 type DbUser = RowDataPacket & {
   id: number;

@@ -4,9 +4,9 @@ import {
   faChartLine, faChevronRight, faMedal,
   faArrowTrendUp, faArrowTrendDown, faMinus,
 } from '@fortawesome/free-solid-svg-icons';
-import TeamLogo from '@/components/TeamLogo';
+import TeamLogo from '@/global/components/TeamLogo';
 import type { RowDataPacket } from 'mysql2';
-import '@/app/styles/ranking-table.css';
+import '@/global/styles/ranking-table.css';
 
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 export interface RankingRow extends RowDataPacket {

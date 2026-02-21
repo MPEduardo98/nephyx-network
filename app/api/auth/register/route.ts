@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import type { ResultSetHeader, RowDataPacket } from 'mysql2';
-import { getDb } from '@/lib/mysql';
+import { getDb } from '@/global/lib/mysql';
 
 export const runtime = 'nodejs';
 

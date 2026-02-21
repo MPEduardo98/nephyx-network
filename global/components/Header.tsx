@@ -9,7 +9,7 @@ import {
   faUser, faTrophy, faCog,
   faRightFromBracket, faRightToBracket, faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { useSidebar } from '@/context/SidebarContext';
+import { useSidebar } from '@/global/context/SidebarContext';
 
 export default function Header() {
   const { data: session, status } = useSession();

@@ -18,8 +18,8 @@ import {
   faSun, faScrewdriverWrench,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import { useSidebar } from '@/context/SidebarContext';
-import { useTheme } from '@/context/ThemeContext';
+import { useSidebar } from '@/global/context/SidebarContext';
+import { useTheme } from '@/global/context/ThemeContext';
 
 const navItems = [
   {

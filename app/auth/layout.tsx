@@ -1,4 +1,4 @@
-import AuthHeader from "@/components/AuthHeader";
+import AuthHeader from "@/app/auth/components/AuthHeader";
 import Footer from "@/components/Footer";
 
 export default function AuthLayout({

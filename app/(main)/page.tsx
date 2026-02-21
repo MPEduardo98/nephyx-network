@@ -6,11 +6,11 @@ import {
   faBolt, faMedal,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faTwitch, faYoutube } from '@fortawesome/free-brands-svg-icons';
-import { getDb } from '@/lib/mysql';
+import { getDb } from '@/global/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
-import TournamentBanner from '@/components/TournamentBanner';
-import RankingTable, { type RankingRow } from '@/components/RankingTable';
-import StatsCounter from '@/components/StatsCounter';
+import TournamentBanner from '@/app/(main)/home/components/TournamentBanner';
+import RankingTable, { type RankingRow } from '@/app/(main)/home/components/RankingTable';
+import StatsCounter from '@/app/(main)/home/components/StatsCounter';
 import {
   getTorneosDestacados,
   formatPrize,
@@ -18,7 +18,7 @@ import {
   getStatusType,
   getStatusLabel,
   stripHtml,
-} from '@/lib/torneos';
+} from '@/global/lib/torneos';
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 async function getStats() {

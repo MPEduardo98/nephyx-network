@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/mysql';
+import { getDb } from '@/global/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
 
 export const dynamic = 'force-dynamic';

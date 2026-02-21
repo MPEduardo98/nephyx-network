@@ -1,4 +1,4 @@
-import { getDb } from '@/lib/mysql';
+import { getDb } from '@/global/lib/mysql';
 import type { RowDataPacket } from 'mysql2';
 
 // ── Types ──────────────────────────────────────────────────────────────────────

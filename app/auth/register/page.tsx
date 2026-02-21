@@ -17,8 +17,8 @@ import {
   faCheck,
   faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
-import { useAlert } from '@/components/alerts/AlertProvider';
-import Loader from '@/components/Loader';
+import { useAlert } from '@/global/components/alerts/AlertProvider';
+import Loader from '@/global/components/Loader';
 
 type FormDataState = {
   username: string;

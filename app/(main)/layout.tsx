@@ -1,7 +1,7 @@
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import Footer from "@/components/Footer";
-import { SidebarProvider } from "@/context/SidebarContext";
+import Header from "@/global/components/Header";
+import Sidebar from "@/global/components/Sidebar";
+import Footer from "@/global/components/Footer";
+import { SidebarProvider } from "@/global/context/SidebarContext";
 
 export default function MainLayout({
   children,

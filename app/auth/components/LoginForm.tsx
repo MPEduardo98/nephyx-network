@@ -17,7 +17,7 @@ import {
   faTwitch,
   faGoogle,
 } from '@fortawesome/free-brands-svg-icons';
-import { useAlert } from '@/components/alerts/AlertProvider';
+import { useAlert } from '@/global/components/alerts/AlertProvider';
 
 export default function LoginForm() {
   const [login, setLogin] = useState('');

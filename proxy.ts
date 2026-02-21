@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-import { authConfig } from '@/auth.config';
+import { authConfig } from '@/app/auth/libs/auth.config';
 
 // Next.js 16 renombró middleware.ts a proxy.ts
 export default NextAuth(authConfig).auth;
